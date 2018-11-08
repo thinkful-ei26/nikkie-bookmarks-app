@@ -101,12 +101,13 @@ const bookmarkList = (function(){
     if (bookmark.expanded){
       return `
       <li class = "bookmark-element js-bookmark-element" data-bookmark-id = "${bookmark.id}">
+      <button class = "delete-bookmark  js-delete-bookmark"><i class="fas fa-trash-alt "></i></button>
       <div>
         <p class = "bookmark-title js-bookmark-title">${bookmark.title}</p>
         <p>${rating}</p>
         <p>${desc}</p>
-        <a href="${bookmark.url}">More from site</a>
-        <button class = "js-delete-bookmark"><i class="fas fa-trash-alt "></i></button>
+        <a href="${bookmark.url} class = "visit-site" target = "_blank">Visit site</a>
+        <br>
       </div>
     </li>
       `;
@@ -114,10 +115,10 @@ const bookmarkList = (function(){
     else{
       return `
       <li class = "bookmark-element js-bookmark-element" data-bookmark-id = "${bookmark.id}">
+      <button class = "delete-bookmark js-delete-bookmark"><i class="fas fa-trash-alt "></i></button>
       <div>
         <p class = "bookmark-title js-bookmark-title">${bookmark.title}</p>
         <p>${rating}</p>
-        <button class = "js-delete-bookmark"><i class="fas fa-trash-alt "></i></button>
       </div>
     </li>
       `;   
