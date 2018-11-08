@@ -14,6 +14,17 @@ const store = (function(){
     this.bookmarks = this.bookmarks.filter(bookmark => bookmark.id !== id);
   };
 
+  const findBookmarkById = function(id){
+    //QUESTION why does "this" not work here?
+    console.log(store.bookmarks);
+    return store.bookmarks.find(bookmark=> bookmark.id===id);
+  };
+
+  const toggleExpandedForBookmark = function(id){
+    const bookmark = findBookmarkById(id);
+    bookmark.expanded = !bookmark.expanded;
+  };
+
   return{
     bookmarks,
     filter,
@@ -21,5 +32,6 @@ const store = (function(){
     adding,
     addBookmark,
     findAndDelete,
+    toggleExpandedForBookmark,
   };
 }());

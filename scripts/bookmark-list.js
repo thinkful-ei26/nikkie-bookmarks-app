@@ -22,7 +22,10 @@ const bookmarkList = (function(){
       //grab all the values (title, url, rating, desc) - remember, rating and desc might not exist
       const title = $(event.target).find('.js-bookmark-title').val();
       const url = $(event.target).find('.js-bookmark-url').val();
-      const desc = $(event.target).find('.js-bookmark-description').val();
+      let desc = $(event.target).find('.js-bookmark-description').val();
+      if (!desc){
+        desc = null;
+      } //if desc is left blank, send in null
       const rating = $(event.target).find('.js-bookmark-rating').val();
       //make form disappear by toggling the adding 
       //call an api fn that will send/post this info to the server to create this bookmark. Pass in all the info, a callback anonymous function if its successful, and a callback anonymous function that deals with an error   
@@ -74,17 +77,35 @@ const bookmarkList = (function(){
   };
 
   const generateBookmarkElement = function(bookmark){
-    return `
-    <li class = "bookmark-element js-bookmark-element" data-bookmark-id = "${bookmark.id}">
-    <div>
-      <p>${bookmark.title}</p>
-      <p>${bookmark.rating}</p>
-      <p>${bookmark.desc}</p>
-      <a href="${bookmark.url}">More from site</a>
-      <button class = "js-delete-bookmark"><i class="fas fa-trash-alt "></i></button>
-    </div>
-  </li>
-    `;
+    //check if rating and desc have values 
+    const rating = bookmark.rating!==null ? bookmark.rating : 'No rating yet';
+    const desc = bookmark.desc!==null ? bookmark.desc : 'No description yet';
+
+    if (bookmark.expanded){
+      return `
+      <li class = "bookmark-element js-bookmark-element" data-bookmark-id = "${bookmark.id}">
+      <div>
+        <p class = "js-bookmark-title">${bookmark.title}</p>
+        <p>${rating}</p>
+        <p>${desc}</p>
+        <a href="${bookmark.url}">More from site</a>
+        <button class = "js-delete-bookmark"><i class="fas fa-trash-alt "></i></button>
+      </div>
+    </li>
+      `;
+    }
+    else{
+      return `
+      <li class = "bookmark-element js-bookmark-element" data-bookmark-id = "${bookmark.id}">
+      <div>
+        <p class = "js-bookmark-title">${bookmark.title}</p>
+        <p>${rating}</p>
+        <button class = "js-delete-bookmark"><i class="fas fa-trash-alt "></i></button>
+      </div>
+    </li>
+      `;   
+    }
+
   };
 
   //return the id of the given bookmark 
@@ -106,6 +127,15 @@ const bookmarkList = (function(){
     });
     //render 
   };
+
+  const handleExpandBookmark = function(){
+    //event listener on the titles of the elements, when its clicked toggle the expanded property on that bookmark. then render 
+    $('.js-bookmark-list').on('click', '.js-bookmark-title', event =>{
+      const id = getIdFromBookmark(event.target);
+      store.toggleExpandedForBookmark(id);
+      render();
+    });
+  }
 
   const render = function(){
     let bookmarks = [...store.bookmarks];
@@ -129,6 +159,7 @@ const bookmarkList = (function(){
     handleAddBookmark();
     handleCreateBookmark();
     handleDeleteBookmark();
+    handleExpandBookmark();
   };
 
   return {
