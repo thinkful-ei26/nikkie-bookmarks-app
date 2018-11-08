@@ -113,6 +113,7 @@ const bookmarkList = (function(){
         <p>${desc}</p>
         <a href="${bookmark.url} class = "visit-site" target = "_blank">Visit site</a>
         <br>
+        <p class = "details js-details" > Less Details <i class="fas fa-caret-up"></i> </p>
       </div>
     </li>
       `;
@@ -124,6 +125,7 @@ const bookmarkList = (function(){
       <div>
         <p class = "bookmark-title js-bookmark-title">${bookmark.title}</p>
         <p>${rating}</p>
+        <p class = "details js-details" > More Details <i class="fas fa-caret-down"></i> </p>
       </div>
     </li>
       `;   
@@ -153,7 +155,7 @@ const bookmarkList = (function(){
 
   const handleExpandBookmark = function(){
     //event listener on the titles of the elements, when its clicked toggle the expanded property on that bookmark. then render 
-    $('.js-bookmark-list').on('click', '.js-bookmark-title', event =>{
+    $('.js-bookmark-list').on('click', '.js-details', event =>{
       const id = getIdFromBookmark(event.target);
       store.toggleExpandedForBookmark(id);
       render();
