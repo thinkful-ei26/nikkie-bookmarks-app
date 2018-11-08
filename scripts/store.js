@@ -29,6 +29,10 @@ const store = (function(){
     this.error = error;
   };
 
+  const setFilterRating = function (filter_rating){
+    this.filter = filter_rating;
+  };
+
   return{
     bookmarks,
     filter,
@@ -37,6 +41,7 @@ const store = (function(){
     addBookmark,
     findAndDelete,
     toggleExpandedForBookmark,
-    setError
+    setError,
+    setFilterRating,
   };
 }());

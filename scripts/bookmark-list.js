@@ -155,9 +155,23 @@ const bookmarkList = (function(){
     });
   };
 
+  const handleFilterRatings = function(){
+    //listen for when an option is clicked/state of dropdown is changed
+    $('.js-filter-rating-dropdown').change(event=>{
+      //grab the value of what they chose
+      const filter_rating = $('.js-filter-rating-dropdown').val();
+      store.setFilterRating(filter_rating);
+      render();
+      console.log(filter_rating);
+    });
+  };
+
   const render = function(){
     let bookmarks = [...store.bookmarks];
-
+    if (store.filter){
+      console.log('here');
+      bookmarks = bookmarks.filter(bookmark=>bookmark.rating>=store.filter);
+    }
     //check if the adding mode is true. if it is, generate the adding form, if it isn't, dont have the form be there
     if(store.adding){
       $('.js-adding-new-bookmark-form').html(generateAddBookmarkForm());
@@ -178,6 +192,7 @@ const bookmarkList = (function(){
     handleCreateBookmark();
     handleDeleteBookmark();
     handleExpandBookmark();
+    handleFilterRatings();
   };
 
   return {
