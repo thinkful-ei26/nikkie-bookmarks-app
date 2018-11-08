@@ -64,12 +64,12 @@ const bookmarkList = (function(){
           <br>
           <label for="bookmark-rating">Rating:</label>
           <select class = "input-bookmark-rating js-input-bookmark-rating">
-            <option selected disabled>Choose a Rating</option>
+            <option selected >Choose a Rating</option>
             <option value="1">1 Star</option>
             <option value="2">2 Stars</option>
             <option value="3">3 Stars</option>
             <option value="4">4 Stars</option>
-            <option value="4">5 Stars</option>
+            <option value="5">5 Stars</option>
           </select>
           <br>
           <p class = "error-message js-error-message">${err}</p>
@@ -88,8 +88,13 @@ const bookmarkList = (function(){
     let rating = ''; 
     if(bookmark.rating){
       const number_of_stars = bookmark.rating;
+      console.log(number_of_stars);
       for (let i =0; i < number_of_stars; i++){
         rating+='<i class="fas fa-star"></i>';
+      }
+      //also put in empty stars
+      for(let i = 0; i < 5 - number_of_stars; i++){
+        rating+='<i class="far fa-star"></i>';
       }
     }
     else{
