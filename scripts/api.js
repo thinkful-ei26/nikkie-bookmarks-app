@@ -4,13 +4,15 @@ const api = (function(){
 
   const BASE_URL = 'https://thinkful-list-api.herokuapp.com/nikkie';
 
-  const getBookmarks = function(onSuccess){
+  const getBookmarks = function(onSuccess, onError){
+    console.log('in getbookmarks');
     $.ajax({
       url: `${BASE_URL}/bookmarks`,
       method: 'GET',
       contentType: 'application/json',
       //if its sucessfull, pass whatever bookmarks we recieved from the server to the callback fn 
-      success: onSuccess
+      success: onSuccess,
+      error: onError
     });
   };
 

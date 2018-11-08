@@ -8,11 +8,14 @@ $(document).ready(function(){
 
   //and call the getBookmarks fn, and when we get a response back from the server, add each item to the store, and render it 
   api.getBookmarks(bookmarks => {
-    console.log(bookmarks);
     bookmarks.forEach(bookmark=>{
       bookmark.expanded = false; //I add this in manually bc server doesnt include this as a property
       store.addBookmark(bookmark);
     });
     bookmarkList.render();
-  });
+  },
+  error => {
+    console.log('there was an error');
+  }
+  );
 });

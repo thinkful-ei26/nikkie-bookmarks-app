@@ -119,18 +119,19 @@ const bookmarkList = (function(){
     else{
       rating = 'No rating yet';
     }
-    // const rating = bookmark.rating!==null ? bookmark.rating : 'No rating yet';
     const desc = bookmark.desc!==null ? bookmark.desc : 'No description yet';
 
     if (bookmark.expanded){
       return `
       <li class = "bookmark-element js-bookmark-element" data-bookmark-id = "${bookmark.id}">
       <button class = "delete-bookmark  js-delete-bookmark"><i class="fas fa-trash-alt "></i></button>
+      <p class = "bookmark-title js-bookmark-title">${bookmark.title}</p>
       <div>
-        <p class = "bookmark-title js-bookmark-title">${bookmark.title}</p>
         <p>${rating}</p>
         <p>${desc}</p>
+        <br>
         <a href="${bookmark.url} class = "visit-site" target = "_blank">Visit site</a>
+        <br>
         <br>
         <p class = "details js-details" > Less Details <i class="fas fa-caret-up"></i> </p>
       </div>
@@ -141,8 +142,8 @@ const bookmarkList = (function(){
       return `
       <li class = "bookmark-element js-bookmark-element" data-bookmark-id = "${bookmark.id}">
       <button class = "delete-bookmark js-delete-bookmark"><i class="fas fa-trash-alt "></i></button>
+      <p class = "bookmark-title js-bookmark-title">${bookmark.title}</p>
       <div>
-        <p class = "bookmark-title js-bookmark-title">${bookmark.title}</p>
         <p>${rating}</p>
         <p class = "details js-details" > More Details <i class="fas fa-caret-down"></i> </p>
       </div>
