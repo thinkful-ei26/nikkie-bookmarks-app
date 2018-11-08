@@ -64,14 +64,24 @@ const bookmarkList = (function(){
     // const err = store.error ? store.error : '';
     return `
           <h3>Create A New Bookmark</h3>
-          <input name = "title" type="text" class = "input-bookmark-title js-input-bookmark-title" placeholder = "Title">
+          <label for = "title">Title:</label>
           <br>
-          <input name = "url" type="text" class = "input-bookmark-url js-input-bookmark-url" placeholder="URL">
+          <input for = "title" name = "title" type="text" class = "input-bookmark-title js-input-bookmark-title" placeholder = "Title">
           <br>
-          <textarea name = "desc" name="bookmark-desc" cols="20" rows="9" class = "input-bookmark-desc js-input-bookmark-description" placeholder="Write a brief description about your bookmark"></textarea>
           <br>
-          <label for="bookmark-rating">Rating:</label>
-          <select name = "rating" class = "input-bookmark-rating js-input-bookmark-rating">
+          <label for = "url">URL:</label>
+          <br>
+          <input for = "url" name = "url" type="text" class = "input-bookmark-url js-input-bookmark-url" placeholder="URL">
+          <br>
+          <br>
+          <label for = "desc">Description:</label>
+          <br>
+          <textarea for = "desc" name = "desc" name="bookmark-desc" class = "input-bookmark-desc js-input-bookmark-description" placeholder="Write a brief description about your bookmark"></textarea>
+          <br>
+          <br>
+          <label for="rating">Rating:</label>
+          <br>
+          <select for = "rating" name = "rating" class = "input-bookmark-rating js-input-bookmark-rating">
             <option selected disabled>Choose a Rating</option>
             <option value="1">1 Star</option>
             <option value="2">2 Stars</option>
@@ -109,24 +119,42 @@ const bookmarkList = (function(){
 
     //check if desc has a value 
     const desc = bookmark.desc!=='' ? bookmark.desc : 'No description yet';
-    //return a different string if it's in editing mode
+
+    //return a different string if it's in editing mode (NEEDS TO REMEMBER STARS)
     if (bookmark.editing){
+      //deals with the edit remembering which rating was selected
+      const cell = ['','','','',''];
+      cell[bookmark.rating-1] = 'selected';
       return `
       <li class = "bookmark-element js-bookmark-element" data-bookmark-id = "${bookmark.id}">
-      <button class = "delete-bookmark  js-delete-bookmark"><i class="fas fa-trash-alt "></i></button>
-      <button class = "edit-bookmark  js-edit-bookmark"><i class="fas fa-edit"></i></button>
+      <p class = "edit-bookmark-title-p js-bookmark-title">${bookmark.title}</p>
       <form class = "editing-form js-editing-form ">
-        <input name = "title" type = "text" class = "edit-bookmark-title js-edit-bookmark-title" value = "${bookmark.title}"></input>
-        <input name = "url" type = "text" class = "edit-bookmark-url js-edit-bookmark-url" value = "${bookmark.url}"></input>
-        <textarea name = "desc" cols="20" rows="9" class = "edit-bookmark-desc js-edit-bookmark-description" value = "${desc}" >${bookmark.desc}</textarea>
-        <select name = "rating" class = "input-edit-bookmark-rating js-input-edit-bookmark-rating">
+        <br>
+        <label for = "title">Title:</label>
+        <br>
+        <input for = "title" name = "title" type = "text" class = "edit-bookmark-title js-edit-bookmark-title" value = "${bookmark.title}"></input>
+        <br>
+        <br>
+        <label for = "url">URL:</label>
+        <br>
+        <input for = "url" name = "url" type = "text" class = "edit-bookmark-url js-edit-bookmark-url" value = "${bookmark.url}"></input>
+        <br>
+        <br>
+        <label for = "desc">Description:</label>
+        <br>
+        <textarea for = "desc" name = "desc" class = "edit-bookmark-desc js-edit-bookmark-description" value = "${desc}" >${bookmark.desc}</textarea>
+        <br>
+        <br>
+        <label for = "rating">Rating:</label>
+        <br>
+        <select for = "rating" name = "rating" class = "input-edit-bookmark-rating js-input-edit-bookmark-rating">
               <option selected disabled>Choose a Rating</option>
-              <option value="1">1 Star</option>
-              <option value="2">2 Stars</option>
-              <option value="3">3 Stars</option>
-              <option value="4">4 Stars</option>
-              <option value="5">5 Stars</option>
-            </select>
+              <option ${cell[0]} value="1">1 Star</option>
+              <option ${cell[1]} value="2">2 Stars</option>
+              <option ${cell[2]} value="3">3 Stars</option>
+              <option ${cell[3]} value="4">4 Stars</option>
+              <option ${cell[4]} value="5">5 Stars</option>
+        </select>
         <br>
         <output class = "edit-error-message js-edit-error-message"></output>
         <br>
@@ -225,6 +253,7 @@ const bookmarkList = (function(){
       store.toggleEditedForBookmark(id);
 
       render();
+      //then render the correct rating 
     });
 
 
@@ -243,6 +272,8 @@ const bookmarkList = (function(){
     }
   });
 
+
+  //I would have to see what the user actually edited, and only pass that into the update API. Compare what you get back from newBoookmark to what you already had in current. Strip out anything that hasn't changed.
 
   const handleSaveEditBookmark = function(){
     //event listener on submiting the save button - needs to be on the form 

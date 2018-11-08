@@ -2,11 +2,20 @@
   box-sizing: border-box;
 }
 
+li{
+  background-color: #eac9be;
+}
+
+body{
+  background-color:black;
+}
+
 .container {
   max-width: 600px;
   margin: 0 auto;
   text-align: center;
   padding:20px;
+  background-color:white;
 }
 
 .begin-add-bookmark{
@@ -16,7 +25,8 @@
 
 button:hover{
   cursor: pointer;
-  background-color: gray;
+  color: #eac9be;
+  background-color: black;
 }
 
 .filter-rating-dropdown{
@@ -24,7 +34,7 @@ button:hover{
   height:40px;
 }
 
-.filter-rating-dropdown:hover{
+select:hover{
   cursor: pointer;
 }
 
@@ -36,7 +46,7 @@ button:hover{
 
 .bookmark-list li {
   margin-bottom: 20px;
-  border: 1px solid grey;
+  border: 5px solid black;
   border-radius:10px;
 }
 
@@ -45,13 +55,14 @@ li div{
 }
 .adding-new-bookmark-form{
   clear: both;
-  border: 1px solid black;
+  border: 5px solid black;
   margin-top: 10px;
   padding:10px;
   position: relative;
   top:40px;
   margin-bottom: 40px;
   border-radius: 10px;
+  background-color: #eac9be;
 }
 
 input,textarea, button, select{
@@ -59,11 +70,11 @@ input,textarea, button, select{
   text-align: center;
 }
 
-.error-message{
+.error-message, .edit-error-message{
   color:red;
 }
 
-.bookmark-title {
+.bookmark-title, .edit-bookmark-title-p  {
   background-color: black;
   color: white;
   margin: 0;
@@ -72,14 +83,21 @@ input,textarea, button, select{
   padding-left:20px;
   font-weight: bold;
   text-align: left;
-  border-radius: 10px;
+  /* border-bottom-left-radius: 10px; */
+  /* border-bottom-right-radius: 10px; */
 }
 
 a{
   background-color:black;
   color: white;
+  border: 2px solid black;
   text-decoration: none;
   padding:10px;
+}
+
+a:hover{
+  background-color:white;
+  color:black;
 }
 
 .delete-bookmark, .edit-bookmark {
@@ -98,7 +116,7 @@ a{
 
 .edit-bookmark:hover{
   background-color: transparent;
-  color: lightblue;
+  color: #eac9be;
 }
 
 .details{
@@ -109,6 +127,25 @@ a{
 .number-of-items{
   clear:both;
   padding-top:20px;
+  font-weight: bold;
 }
 
-/* Everything below deals with having radio button as star: */
+label{
+  font-weight: bold;
+}
+
+form button{
+  padding:10px;
+}
+
+.editing-form button{
+  margin-bottom:10px;
+}
+
+input,textarea{
+  width:70%;
+}
+
+button,select{
+  border-radius: 10px;
+}
