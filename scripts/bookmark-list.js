@@ -5,28 +5,42 @@ const bookmarkList = (function(){
   const handleAddBookmark = function(){
     //event listener for when user hits add bookmark button. 
     $('.js-begin-add-bookmark').click(event=>{
-      store.adding = !store.adding; //toggle adding in store (is it okay that I do that here?)
-      //toggle the hidden bool???
-      render();
+      store.adding = !store.adding; //toggle adding in store (is it okay that I do that here? Move elsewhere?)
+      //toggle the hidden bool
+      $('form').toggle();
+      store.setError(null); //dont keep any error messages 
+      //render the adding form 
+      renderAddBookmarkForm();
     });
-    //toggle adding in store 
-    //render 
+  };
 
+  const handleCancelAddBookmark = function(){
+    $('.container').on('click', '.js-cancel-create-bookmark-button', event =>{
+      console.log('in cancel');
+      store.adding = !store.adding; //toggle adding in store (is it okay that I do that here? Move elsewhere?)
+      //toggle the hidden bool
+      $('form').toggle();
+      store.setError(null); //dont keep any error messages
+      // render the adding form 
+      renderAddBookmarkForm(); 
+    });
   };
 
   const handleCreateBookmark = function(){
     //event listener on button (event delegation) //QUESTION: when i did event delegation, didnt work. But button doesnt exist yet... 
-    $('form').on('submit', event => {
+    $('.container').on('click', '.js-create-bookmark-button', event => {
       //prevent default
       event.preventDefault();
+      console.log(event.currentTarget);
       //grab all the values (title, url, rating, desc) - remember, rating and desc might not exist
-      const title = $(event.target).find('.js-input-bookmark-title').val();
-      const url = $(event.target).find('.js-input-bookmark-url').val();
-      let desc = $(event.target).find('.js-input-bookmark-description').val();
+      const title = $(event.target).parent('form').find('.js-input-bookmark-title').val();
+      console.log(title);
+      const url = $(event.target).parent('form').find('.js-input-bookmark-url').val();
+      let desc = $(event.target).parent('form').find('.js-input-bookmark-description').val();
       if (!desc){
         desc = null;
       } //if desc is left blank, send in null
-      const rating = $(event.target).find('.js-input-bookmark-rating').val();
+      const rating = $(event.target).parent('form').find('.js-input-bookmark-rating').val();
       //make form disappear by toggling the adding 
       //call an api fn that will send/post this info to the server to create this bookmark. Pass in all the info, a callback anonymous function if its successful, and a callback anonymous function that deals with an error   
       api.createBookmark(title,url,desc,rating,
@@ -35,15 +49,19 @@ const bookmarkList = (function(){
           //take the bookmark (and give it an expanded property=false) and add it to the store 
           bookmark.expanded = false;
           store.adding = !store.adding;
-          console.log(bookmark);
+          $('form').toggle();
+          console.log(store.adding);
           store.addBookmark(bookmark);
           store.setError(null);
+          renderAddBookmarkForm();
           render();
         },
         //if the async function returned an error, it'll run this fn 
         error => {
           store.setError(error.responseJSON.message);
-          render();
+          // renderAddBookmarkForm();//dont need to do this. instead. change the html of just the one element
+          showErrorMessage(store.error);
+          // render(); //when we render here, it resets the form data 
         }
       );
       //render in that callback 
@@ -53,7 +71,7 @@ const bookmarkList = (function(){
 
   const generateAddBookmarkForm = function(){
     //if there's an error message in store
-    const err = store.error ? store.error : '';
+    // const err = store.error ? store.error : '';
     return `
     <h3>Create A New Bookmark</h3>
           <input type="text" class = "input-bookmark-title js-input-bookmark-title" placeholder = "Title">
@@ -64,7 +82,7 @@ const bookmarkList = (function(){
           <br>
           <label for="bookmark-rating">Rating:</label>
           <select class = "input-bookmark-rating js-input-bookmark-rating">
-            <option selected >Choose a Rating</option>
+            <option selected disabled>Choose a Rating</option>
             <option value="1">1 Star</option>
             <option value="2">2 Stars</option>
             <option value="3">3 Stars</option>
@@ -72,8 +90,9 @@ const bookmarkList = (function(){
             <option value="5">5 Stars</option>
           </select>
           <br>
-          <p class = "error-message js-error-message">${err}</p>
+          <p class = "error-message js-error-message"></p>
           <button type = "submit" class = "create-bookmark-button js-create-bookmark-button">Create Bookmark</button>
+          <button class = "cancel-create-bookmark-button js-cancel-create-bookmark-button">Cancel </button>
     `;
   };
 
@@ -179,20 +198,25 @@ const bookmarkList = (function(){
       console.log('here');
       bookmarks = bookmarks.filter(bookmark=>bookmark.rating>=store.filter);
     }
-    //check if the adding mode is true. if it is, generate the adding form, if it isn't, dont have the form be there
+ 
+    //generate string from what's in the store
+    const html = generateAddBookmarksList(bookmarks);
+    $('.js-bookmark-list').html(html);
+  };
+
+  //check if the adding mode is true. if it is, generate the adding form, if it isn't, dont have the form be there
+  const renderAddBookmarkForm = function(){
     if(store.adding){
       $('.js-adding-new-bookmark-form').html(generateAddBookmarkForm());
     }
     else{
       $('.js-adding-new-bookmark-form').html('');
     }
-
-    //generate string from what's in the store
-    const html = generateAddBookmarksList(bookmarks);
-    $('.js-bookmark-list').html(html);
   };
 
-
+  const showErrorMessage = function (error){
+    $('.js-error-message').html(error);
+  };
 
   const bindEventListeners = function(){
     handleAddBookmark();
@@ -200,6 +224,7 @@ const bookmarkList = (function(){
     handleDeleteBookmark();
     handleExpandBookmark();
     handleFilterRatings();
+    handleCancelAddBookmark();
   };
 
   return {
