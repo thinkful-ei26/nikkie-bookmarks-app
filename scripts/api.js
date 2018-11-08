@@ -16,12 +16,12 @@ const api = (function(){
     });
   };
 
-  const createBookmark = function(title,url,desc,rating, onSuccess, onError){
+  const createBookmark = function(newBookmark, onSuccess, onError){
     $.ajax({
       url: `${BASE_URL}/bookmarks`,
       method: 'POST',
       contentType: 'application/json',
-      data: JSON.stringify({title: title, url: url, desc: desc, rating: rating}),
+      data: JSON.stringify(newBookmark),
       // title: JSON.stringify(title),
       // url: JSON.stringify(url),
       // description: JSON.stringify(description),
@@ -34,12 +34,12 @@ const api = (function(){
     });
   };
 
-  const updateBookmark = function(title,url,desc,rating, id, onSuccess, onError){
+  const updateBookmark = function(updatedBookmark, id, onSuccess, onError){
     $.ajax({
       url: `${BASE_URL}/bookmarks/${id}`,
       method: 'PATCH',
       contentType: 'application/json',
-      data: JSON.stringify({title: title, url: url, desc: desc, rating: rating}),
+      data: JSON.stringify(updatedBookmark),
       success: onSuccess,
       error: onError,
     });
@@ -58,5 +58,6 @@ const api = (function(){
     getBookmarks,
     createBookmark,
     deleteBookmark,
+    updateBookmark,
   };
 }());

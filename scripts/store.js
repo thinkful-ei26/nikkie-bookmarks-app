@@ -15,19 +15,21 @@ const store = (function(){
   };
 
   const findBookmarkById = function(id){
-    //QUESTION why does "this" not work here? need to keep the "this" context through the function chain 
-    console.log(bookmarks);
-    return bookmarks.find(bookmark=> bookmark.id===id);
+    return this.bookmarks.find(bookmark=> bookmark.id===id);
   };
 
   const toggleExpandedForBookmark = function(id){
-    const bookmark = findBookmarkById(id);
+    const bookmark = this.findBookmarkById(id);
     bookmark.expanded = !bookmark.expanded;
   };
 
   const toggleEditedForBookmark = function(id){
-    const bookmark = findBookmarkById(id);
+    const bookmark = this.findBookmarkById(id);
     bookmark.editing=!bookmark.editing;
+  };
+
+  const toggleAddingABookmark = function(){
+    store.adding = !store.adding;
   };
 
   const setError = function(error){
@@ -36,6 +38,14 @@ const store = (function(){
 
   const setFilterRating = function (filter_rating){
     this.filter = filter_rating;
+  };
+
+  const updateBookmark = function(newBookmark, id){
+    const bookmark = this.findBookmarkById(id); //changed this, and now it works?
+    console.log(bookmark);
+    Object.assign(bookmark, newBookmark);//not being properly reassigned here
+    console.log('this is the found bookmark',bookmark);
+    console.log('this is the new bookbark',newBookmark);
   };
 
   return{
@@ -48,6 +58,9 @@ const store = (function(){
     toggleExpandedForBookmark,
     setError,
     setFilterRating,
-    toggleEditedForBookmark
+    toggleEditedForBookmark,
+    updateBookmark,
+    findBookmarkById,
+    toggleAddingABookmark
   };
 }());
