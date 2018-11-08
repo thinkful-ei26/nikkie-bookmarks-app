@@ -212,14 +212,18 @@ const bookmarkList = (function(){
   const handleDeleteBookmark = function(){
     //event listener for when user clicks on trash icon 
     $('.js-bookmark-list').on('click', '.js-delete-bookmark', event=>{
+      //first make sure they really want to delete 
+      const delete_confirm = confirm('Are you sure you want to delete this bookmark?');
+      if(delete_confirm){
       //figure out which bookmark we're deleting - get its id 
-      const id = getIdFromBookmark(event.target);
-      //make a request to server to delete (it doesnt return anything)
-      api.deleteBookmark(id, ()=> {
+        const id = getIdFromBookmark(event.target);
+        //make a request to server to delete (it doesnt return anything)
+        api.deleteBookmark(id, ()=> {
         //find and delete from store
-        store.findAndDelete(id);
-        render();
-      });
+          store.findAndDelete(id);
+          render();
+        });
+      }
     });
     //render 
   };
