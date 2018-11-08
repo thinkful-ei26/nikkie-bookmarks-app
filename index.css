@@ -21,6 +21,7 @@ button:hover{
 
 .filter-rating-dropdown{
   float:right;
+  height:40px;
 }
 
 .filter-rating-dropdown:hover{
@@ -29,8 +30,8 @@ button:hover{
 
 .bookmark-list{
   list-style:none;
-  clear:both;
   padding-top:20px;
+  padding-left:0;
 }
 
 .bookmark-list li {
@@ -47,6 +48,10 @@ li div{
   border: 1px solid black;
   margin-top: 10px;
   padding:10px;
+  position: relative;
+  top:40px;
+  margin-bottom: 40px;
+  border-radius: 10px;
 }
 
 input,textarea, button, select{
@@ -62,8 +67,8 @@ input,textarea, button, select{
   background-color: black;
   color: white;
   margin: 0;
-  padding-top:25px;
-  padding-bottom: 10px;
+  padding-top:20px;
+  padding-bottom: 20px;
   padding-left:20px;
   font-weight: bold;
   text-align: left;
@@ -77,10 +82,10 @@ a{
   padding:10px;
 }
 
-.delete-bookmark {
+.delete-bookmark, .edit-bookmark {
   float:right;
   margin-right: 20px;
-  margin-top:25px;
+  margin-top:20px;
   background-color: transparent;
   border: none;
   color:white;
@@ -88,13 +93,22 @@ a{
 
 .delete-bookmark:hover{
   background-color: transparent;
-  color:red;
+  color: lightcoral;
 }
 
+.edit-bookmark:hover{
+  background-color: transparent;
+  color: lightblue;
+}
 
 .details{
   cursor: pointer;
   color:gray;
+}
+
+.number-of-items{
+  clear:both;
+  padding-top:20px;
 }
 
 /* Everything below deals with having radio button as star: */

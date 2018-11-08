@@ -15,7 +15,7 @@ const bookmarkList = (function(){
   };
 
   const handleCancelAddBookmark = function(){
-    $('.container').on('click', '.js-cancel-create-bookmark-button', event =>{
+    $('form').on('click', '.js-cancel-create-bookmark-button', event => {
       console.log('in cancel');
       store.adding = !store.adding; //toggle adding in store (is it okay that I do that here? Move elsewhere?)
       //toggle the hidden bool
@@ -27,20 +27,19 @@ const bookmarkList = (function(){
   };
 
   const handleCreateBookmark = function(){
-    //event listener on button (event delegation) //QUESTION: when i did event delegation, didnt work. But button doesnt exist yet... 
-    $('.container').on('click', '.js-create-bookmark-button', event => {
+    //event listener on button (event delegation)
+    $('form').on('submit', event => {
       //prevent default
       event.preventDefault();
-      console.log(event.currentTarget);
       //grab all the values (title, url, rating, desc) - remember, rating and desc might not exist
-      const title = $(event.target).parent('form').find('.js-input-bookmark-title').val();
+      const title = $(event.target).find('.js-input-bookmark-title').val();
       console.log(title);
-      const url = $(event.target).parent('form').find('.js-input-bookmark-url').val();
-      let desc = $(event.target).parent('form').find('.js-input-bookmark-description').val();
+      const url = $(event.target).find('.js-input-bookmark-url').val();
+      let desc = $(event.target).find('.js-input-bookmark-description').val();
       if (!desc){
         desc = null;
       } //if desc is left blank, send in null
-      const rating = $(event.target).parent('form').find('.js-input-bookmark-rating').val();
+      const rating = $(event.target).find('.js-input-bookmark-rating').val();
       //make form disappear by toggling the adding 
       //call an api fn that will send/post this info to the server to create this bookmark. Pass in all the info, a callback anonymous function if its successful, and a callback anonymous function that deals with an error   
       api.createBookmark(title,url,desc,rating,
@@ -59,13 +58,9 @@ const bookmarkList = (function(){
         //if the async function returned an error, it'll run this fn 
         error => {
           store.setError(error.responseJSON.message);
-          // renderAddBookmarkForm();//dont need to do this. instead. change the html of just the one element
           showErrorMessage(store.error);
-          // render(); //when we render here, it resets the form data 
         }
-      );
-      //render in that callback 
-     
+      );     
     });
   };
 
@@ -73,7 +68,7 @@ const bookmarkList = (function(){
     //if there's an error message in store
     // const err = store.error ? store.error : '';
     return `
-    <h3>Create A New Bookmark</h3>
+          <h3>Create A New Bookmark</h3>
           <input type="text" class = "input-bookmark-title js-input-bookmark-title" placeholder = "Title">
           <br>
           <input type="text" class = "input-bookmark-url js-input-bookmark-url" placeholder="URL">
@@ -92,7 +87,7 @@ const bookmarkList = (function(){
           <br>
           <p class = "error-message js-error-message"></p>
           <button type = "submit" class = "create-bookmark-button js-create-bookmark-button">Create Bookmark</button>
-          <button class = "cancel-create-bookmark-button js-cancel-create-bookmark-button">Cancel </button>
+          <button type = "button" class = "cancel-create-bookmark-button js-cancel-create-bookmark-button">Cancel </button>
     `;
   };
 
@@ -101,8 +96,6 @@ const bookmarkList = (function(){
   };
 
   const generateBookmarkElement = function(bookmark){
-    //check if rating and desc have values 
-
     //if rating has a value, give that many stars. If not, just write no rating yet
     let rating = ''; 
     if(bookmark.rating){
@@ -119,12 +112,42 @@ const bookmarkList = (function(){
     else{
       rating = 'No rating yet';
     }
+
+    //check if desc has a value 
     const desc = bookmark.desc!==null ? bookmark.desc : 'No description yet';
 
-    if (bookmark.expanded){
+    //return a different string if it's in editing mode
+    console.log(bookmark.editing);
+    if (bookmark.editing){
+      console.log('here');
       return `
       <li class = "bookmark-element js-bookmark-element" data-bookmark-id = "${bookmark.id}">
       <button class = "delete-bookmark  js-delete-bookmark"><i class="fas fa-trash-alt "></i></button>
+      <button class = "edit-bookmark  js-edit-bookmark"><i class="fas fa-edit"></i></button>
+      <form class = "editing-form js-editing-form ">
+        <input type = "text" class = "edit-bookmark-title js-edit-bookmark-title" value = "${bookmark.title}"></input>
+        <input type = "text" class = "edit-bookmark-url js-edit-bookmark-url" value = "${bookmark.url}"></input>
+        <input type = "text" class = "edit-bookmark-desc js-edit-bookmark-desc" value = "${desc}"></input>
+        <select class = "input-edit-bookmark-rating js-input-edit-bookmark-rating">
+              <option selected disabled>Choose a Rating</option>
+              <option value="1">1 Star</option>
+              <option value="2">2 Stars</option>
+              <option value="3">3 Stars</option>
+              <option value="4">4 Stars</option>
+              <option value="5">5 Stars</option>
+            </select>
+        <br>
+        <button type = "submit" class = "save-edit-button js-save-edit-button"> Save </button>
+        <button type = "button" class = "cancel-edit-button js-cancel-edit-button"> Cancel </button>
+      </form> 
+    </li>
+      `;
+    }
+    else if (bookmark.expanded){
+      return `
+      <li class = "bookmark-element js-bookmark-element" data-bookmark-id = "${bookmark.id}">
+      <button class = "delete-bookmark  js-delete-bookmark"><i class="fas fa-trash-alt "></i></button>
+      <button class = "edit-bookmark  js-edit-bookmark"><i class="fas fa-edit"></i></button>
       <p class = "bookmark-title js-bookmark-title">${bookmark.title}</p>
       <div>
         <p>${rating}</p>
@@ -142,6 +165,7 @@ const bookmarkList = (function(){
       return `
       <li class = "bookmark-element js-bookmark-element" data-bookmark-id = "${bookmark.id}">
       <button class = "delete-bookmark js-delete-bookmark"><i class="fas fa-trash-alt "></i></button>
+      <button class = "edit-bookmark  js-edit-bookmark"><i class="fas fa-edit"></i></button>
       <p class = "bookmark-title js-bookmark-title">${bookmark.title}</p>
       <div>
         <p>${rating}</p>
@@ -151,6 +175,12 @@ const bookmarkList = (function(){
       `;   
     }
 
+  };
+
+  const generateNumbersOfBookmarks = function(bookmarks){
+    return `
+    ${bookmarks.length} bookmarks
+    `;
   };
 
   //return the id of the given bookmark 
@@ -193,16 +223,64 @@ const bookmarkList = (function(){
     });
   };
 
+  const handleEditingBookmark = function(){
+    //event listener for when user hits edit button 
+    $('.js-bookmark-list').on('click', '.js-edit-bookmark', event=>{
+      console.log('editing!');
+
+      //find out which bookmark we're editing
+      const id = getIdFromBookmark(event.target);
+
+      //change it's editing property to true 
+      store.toggleEditedForBookmark(id);
+
+      render();
+    });
+
+
+    //render - if editing is true, have a different form with the current values in there, let them change it, then recall the API and UPDATE it (using patch method)
+
+  };
+
+
+  const handleSaveEditBookmark = function(){
+    //event listener on submiting the save button - needs to be on the form 
+    $('.js-bookmark-list').on('submit', '.js-editing-form', event =>{
+      event.preventDefault();
+      //grab the values of everything in the form, and send it to the update api 
+    });
+  };
+
+  const handleCancelEditBookmark = function(){
+    //event listener on cancel button - if it cancels, just toggle editing and render     
+    $('.js-bookmark-list').on('click', '.js-cancel-edit-button', event =>{
+      console.log('in cancel');
+      //toggle editing for that bookmark 
+      const bookmark = $(event.target).closest('.js-bookmark-element');
+      const id = getIdFromBookmark(bookmark);
+      store.toggleEditedForBookmark(id);
+      render();
+    });
+  };
+
   const render = function(){
+    //copy the store bookmarks so we can filter it if necassary, but doesnt change the store itself 
+
     let bookmarks = [...store.bookmarks];
     if (store.filter){
-      console.log('here');
       bookmarks = bookmarks.filter(bookmark=>bookmark.rating>=store.filter);
     }
- 
+
+    console.log(bookmarks);
+    
     //generate string from what's in the store
     const html = generateAddBookmarksList(bookmarks);
     $('.js-bookmark-list').html(html);
+
+    //generate number of items
+    const numbers_html = generateNumbersOfBookmarks(bookmarks);
+    $('.js-number-of-items').html(numbers_html);
+
   };
 
   //check if the adding mode is true. if it is, generate the adding form, if it isn't, dont have the form be there
@@ -226,6 +304,9 @@ const bookmarkList = (function(){
     handleExpandBookmark();
     handleFilterRatings();
     handleCancelAddBookmark();
+    handleEditingBookmark();
+    handleCancelEditBookmark();
+    handleSaveEditBookmark();
   };
 
   return {

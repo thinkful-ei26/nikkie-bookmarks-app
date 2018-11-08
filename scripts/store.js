@@ -15,14 +15,19 @@ const store = (function(){
   };
 
   const findBookmarkById = function(id){
-    //QUESTION why does "this" not work here?
-    console.log(store.bookmarks);
-    return store.bookmarks.find(bookmark=> bookmark.id===id);
+    //QUESTION why does "this" not work here? need to keep the "this" context through the function chain 
+    console.log(bookmarks);
+    return bookmarks.find(bookmark=> bookmark.id===id);
   };
 
   const toggleExpandedForBookmark = function(id){
     const bookmark = findBookmarkById(id);
     bookmark.expanded = !bookmark.expanded;
+  };
+
+  const toggleEditedForBookmark = function(id){
+    const bookmark = findBookmarkById(id);
+    bookmark.editing=!bookmark.editing;
   };
 
   const setError = function(error){
@@ -43,5 +48,6 @@ const store = (function(){
     toggleExpandedForBookmark,
     setError,
     setFilterRating,
+    toggleEditedForBookmark
   };
 }());

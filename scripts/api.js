@@ -34,6 +34,17 @@ const api = (function(){
     });
   };
 
+  const updateBookmark = function(title,url,desc,rating, id, onSuccess, onError){
+    $.ajax({
+      url: `${BASE_URL}/bookmarks/${id}`,
+      method: 'PATCH',
+      contentType: 'application/json',
+      data: JSON.stringify({title: title, url: url, desc: desc, rating: rating}),
+      success: onSuccess,
+      error: onError,
+    });
+  };
+
   const deleteBookmark = function(id, onSuccess){
     $.ajax({
       url: `${BASE_URL}/bookmarks/${id}`,
