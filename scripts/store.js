@@ -25,6 +25,10 @@ const store = (function(){
     bookmark.expanded = !bookmark.expanded;
   };
 
+  const setError = function(error){
+    this.error = error;
+  };
+
   return{
     bookmarks,
     filter,
@@ -33,5 +37,6 @@ const store = (function(){
     addBookmark,
     findAndDelete,
     toggleExpandedForBookmark,
+    setError
   };
 }());

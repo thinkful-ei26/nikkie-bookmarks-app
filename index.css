@@ -48,3 +48,12 @@ input,textarea, button, select{
   margin-top:10px;
   text-align: center;
 }
+
+.error-message{
+  color:red;
+}
+
+.bookmark-title {
+  background-color: black;
+  color: white;
+}
