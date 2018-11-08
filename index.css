@@ -1,0 +1,50 @@
+* {
+  box-sizing: border-box;
+}
+
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+  padding:20px;
+}
+
+.begin-add-bookmark{
+  /* float: left; */
+  padding: 10px;
+}
+
+button:hover{
+  cursor: pointer;
+  background-color: gray;
+}
+
+.filter-rating-dropdown{
+  /* float:right; */
+}
+
+.filter-rating-dropdown:hover{
+  cursor: pointer;
+}
+
+.bookmark-list{
+  list-style:none;
+}
+
+.bookmark-list li {
+  margin-bottom: 20px;
+  border: 1px solid grey;
+  padding: 20px;
+}
+
+.adding-new-bookmark-form{
+  clear: both;
+  border: 1px solid black;
+  margin-top: 10px;
+  padding:10px;
+}
+
+input,textarea, button, select{
+  margin-top:10px;
+  text-align: center;
+}
