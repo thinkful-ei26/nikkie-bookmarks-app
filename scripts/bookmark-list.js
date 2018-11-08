@@ -22,15 +22,19 @@ const bookmarkList = (function(){
       //grab all the values (title, url, rating, desc) - remember, rating and desc might not exist
       const title = $(event.target).find('.js-bookmark-title').val();
       const url = $(event.target).find('.js-bookmark-url').val();
-      const description = $(event.target).find('.js-bookmark-description').val();
+      const desc = $(event.target).find('.js-bookmark-description').val();
       const rating = $(event.target).find('.js-bookmark-rating').val();
       //make form disappear by toggling the adding 
-      store.adding = !store.adding;
       //call an api fn that will send/post this info to the server to create this bookmark. Pass in all the info, a callback anonymous function if its successful, and a callback anonymous function that deals with an error   
-      api.createBookmark(title,url,description,rating,
-        //if the async function was successful, it'll run this fn
-        bookmark =>{
+      api.createBookmark(title,url,desc,rating,
+        //if the async function was successful, it'll run this callback fn
+        bookmark => {
+          //take the bookmark (and give it an expanded property=false) and add it to the store 
+          bookmark.expanded = false;
+          store.adding = !store.adding;
           console.log(bookmark);
+          store.addBookmark(bookmark);
+          render();
         },
         //if the async function returned an error, it'll run this fn 
         error => {
@@ -65,15 +69,58 @@ const bookmarkList = (function(){
     `;
   };
 
+  const generateAddBookmarksList = function(bookmarks){
+    return bookmarks.map(bookmark=>generateBookmarkElement(bookmark)).join('');
+  };
+
+  const generateBookmarkElement = function(bookmark){
+    return `
+    <li class = "bookmark-element js-bookmark-element" data-bookmark-id = "${bookmark.id}">
+    <div>
+      <p>${bookmark.title}</p>
+      <p>${bookmark.rating}</p>
+      <p>${bookmark.desc}</p>
+      <a href="${bookmark.url}">More from site</a>
+      <button class = "js-delete-bookmark"><i class="fas fa-trash-alt "></i></button>
+    </div>
+  </li>
+    `;
+  };
+
+  //return the id of the given bookmark 
+  const getIdFromBookmark = function(bookmark){
+    return $(bookmark).closest('.js-bookmark-element').data('bookmark-id');
+  };
+
+  const handleDeleteBookmark = function(){
+    //event listener for when user clicks on trash icon 
+    $('.js-bookmark-list').on('click', '.js-delete-bookmark', event=>{
+      //figure out which bookmark we're deleting - get its id 
+      const id = getIdFromBookmark(event.target);
+      //make a request to server to delete (it doesnt return anything)
+      api.deleteBookmark(id, ()=> {
+        //find and delete from store
+        store.findAndDelete(id);
+        render();
+      });
+    });
+    //render 
+  };
+
   const render = function(){
     let bookmarks = [...store.bookmarks];
 
+    //check if the adding mode is true. if it is, generate the adding form, if it isn't, dont have the form be there
     if(store.adding){
       $('.js-adding-new-bookmark-form').html(generateAddBookmarkForm());
     }
     else{
       $('.js-adding-new-bookmark-form').html('');
     }
+
+    //generate string from what's in the store
+    const html = generateAddBookmarksList(bookmarks);
+    $('.js-bookmark-list').html(html);
   };
 
 
@@ -81,6 +128,7 @@ const bookmarkList = (function(){
   const bindEventListeners = function(){
     handleAddBookmark();
     handleCreateBookmark();
+    handleDeleteBookmark();
   };
 
   return {

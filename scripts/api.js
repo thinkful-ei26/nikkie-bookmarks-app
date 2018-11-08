@@ -4,42 +4,46 @@ const api = (function(){
 
   const BASE_URL = 'https://thinkful-list-api.herokuapp.com/nikkie';
 
-  const getBookmarks = function(success){
+  const getBookmarks = function(onSuccess){
     $.ajax({
       url: `${BASE_URL}/bookmarks`,
       method: 'GET',
       contentType: 'application/json',
       //if its sucessfull, pass whatever bookmarks we recieved from the server to the callback fn 
-      success: bookmarks => {
-        success(bookmarks);
-      }
+      success: onSuccess
     });
   };
 
-  const createBookmark = function(title,url,description,rating, success, error){
-    //QUESTION: WILL THIS HAVE 2 URLS? url base and url that user wants? 
+  const createBookmark = function(title,url,desc,rating, onSuccess, onError){
     $.ajax({
       url: `${BASE_URL}/bookmarks`,
       method: 'POST',
       contentType: 'application/json',
-      title: JSON.stringify(title),
+      data: JSON.stringify({title: title, url: url, desc: desc, rating: rating}),
+      // title: JSON.stringify(title),
       // url: JSON.stringify(url),
-      description: JSON.stringify(description),
-      rating: JSON.stringify(rating),
-      //QUESTION: don't understand all these callbacks below and how they work
+      // description: JSON.stringify(description),
+      // rating: JSON.stringify(rating),
+      
       //if its successful, take whatever the server returned and pass it into the callback "success"
-      success: bookmark => {
-        success(bookmark);
-      },
+      success: onSuccess,
       //if its not successful, pass in whatever the server responded to the error callback fn
-      error: response =>{
-        error(response);
-      }
+      error: onError,
+    });
+  };
+
+  const deleteBookmark = function(id, onSuccess){
+    $.ajax({
+      url: `${BASE_URL}/bookmarks/${id}`,
+      method: 'DELETE',
+      contentType: 'application/json',
+      success: onSuccess,
     });
   };
 
   return{
     getBookmarks,
-    createBookmark
+    createBookmark,
+    deleteBookmark,
   };
 }());
