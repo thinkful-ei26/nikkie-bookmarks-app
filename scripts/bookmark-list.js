@@ -54,6 +54,12 @@ const bookmarkList = (function(){
     //check if desc has a value, if not write "no description yet" 
     const desc = bookmark.desc!=='' ? bookmark.desc : 'No description yet';
 
+    //return a different string if this bookmark is in expanded mode vs not
+    let details = bookmark.expanded ? `  <p>${desc}</p>
+        <a href="${bookmark.url} class = "visit-site" target = "_blank">Visit site</a>
+        <button type = "button" class = "details js-details" > Less Details <i class="fas fa-caret-up"></i> </button>
+        ` : '<button type = "button" class = "details js-details" > More Details <i class="fas fa-caret-down"></i> </button>';
+
     //return a different string if it's in editing mode
     if (bookmark.editing){
       //deals with the edit remembering which rating value was selected
@@ -87,12 +93,7 @@ const bookmarkList = (function(){
       `;
     }
 
-    //return a different string if this bookmark is in expanded mode
-
-    else if (bookmark.expanded){
-      let details = `  <p>${desc}</p>
-      <a href="${bookmark.url} class = "visit-site" target = "_blank">Visit site</a>
-      `;
+    else {
       return `
       <li class = "bookmark-element js-bookmark-element" data-bookmark-id = "${bookmark.id}">
       <div class = "float-right">
@@ -102,31 +103,11 @@ const bookmarkList = (function(){
       <p class = "bookmark-title js-bookmark-title">${bookmark.title}</p>
       <div>
         <p>${rating}</p>
-        <p>${desc}</p>
-        <a href="${bookmark.url} class = "visit-site" target = "_blank">Visit site</a>
-        <button type = "button" class = "details js-details" > Less Details <i class="fas fa-caret-up"></i> </button>
+        ${details}
       </div>
     </li>
       `;
     }
-
-    //return a normal li element otherwsef 
-    else{
-      return `
-      <li class = "bookmark-element js-bookmark-element" data-bookmark-id = "${bookmark.id}">
-      <div class = "float-right">
-      <button aria-label = "edit bookmark" class = "edit-bookmark  js-edit-bookmark"><i class="fas fa-edit"></i></button>
-      <button aria-label = "delete bookmark" class = "delete-bookmark js-delete-bookmark"><i class="fas fa-trash-alt "></i></button>
-      </div>
-      <p class = "bookmark-title js-bookmark-title">${bookmark.title}</p>
-      <div>
-        <p>${rating}</p>
-        <button type = "button" class = "details js-details" > More Details <i class="fas fa-caret-down"></i> </button>
-      </div>
-    </li>
-      `;   
-    }
-
   };
 
   //generates the string that tells user how many bookmarks are on page
