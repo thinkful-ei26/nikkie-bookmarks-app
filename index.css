@@ -115,6 +115,7 @@ a:hover{
 .float-right{
   float:right;
   margin-top:10px;
+  position:relative
 }
 
 /* FIX CSS HERE */
@@ -128,7 +129,7 @@ a:hover{
 
 .delete-bookmark:hover{
   background-color: transparent;
-  color: lightcoral;
+  color: #eac9be;
   border: none;
 }
 
@@ -187,3 +188,33 @@ select{
 h1{
   text-shadow: 2px 2px #eac9be;
 }
+
+.edit-span{
+  position: absolute;
+  background-color: #eac9be;
+  right:40px;
+  top:-10px;
+  color:black;
+  padding:1px;
+  opacity: 0;
+  font-size:11px;
+  transition: opacity .5s;
+}
+
+.delete-span{
+  position: absolute;
+  background-color: #eac9be;
+  right:-2px;
+  top:-10px;
+  color:black;
+  padding:1px;
+  opacity: 0;
+  font-size:11px;
+  transition: opacity .5s;
+
+}
+
+/* changes the icon's description opacity */
+.edit-bookmark:hover + .edit-span, .delete-bookmark:hover + .delete-span{
+  opacity: 1; 
+} 

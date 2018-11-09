@@ -30,6 +30,8 @@ const store = (function(){
 
   const toggleAddingABookmark = function(){
     store.adding = !store.adding;
+    //toggle the hidden bool for the form 
+    $('form').toggle();
   };
 
   const setError = function(error){

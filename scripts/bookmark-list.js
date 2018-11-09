@@ -98,7 +98,9 @@ const bookmarkList = (function(){
       <li class = "bookmark-element js-bookmark-element" data-bookmark-id = "${bookmark.id}">
       <div class = "float-right">
       <button aria-label = "edit bookmark" class = "edit-bookmark  js-edit-bookmark"><i class="fas fa-edit"></i></button>
+      <span class = "edit-span js-edit-span">Edit</span>
       <button aria-label = "delete bookmark" class = "delete-bookmark js-delete-bookmark"><i class="fas fa-trash-alt "></i></button>
+      <span class = "delete-span js-delete-span">Delete</span>
       </div>
       <p class = "bookmark-title js-bookmark-title">${bookmark.title}</p>
       <div>
@@ -113,7 +115,7 @@ const bookmarkList = (function(){
   //generates the string that tells user how many bookmarks are on page
   const generateNumbersOfBookmarks = function(bookmarks){
     //bookmark vs bookmarks depending on how many there are 
-    const word = bookmarks.length >1 ? 'bookmarks' : 'bookmark';
+    const word = bookmarks.length >1 || bookmarks.length===0 ? 'bookmarks' : 'bookmark';
     return `${bookmarks.length} ${word}`;
   };
 
@@ -128,8 +130,6 @@ const bookmarkList = (function(){
     $('.js-begin-add-bookmark').click(event=>{
       //toggle adding in store
       store.toggleAddingABookmark(); 
-      //toggle the hidden bool for the form 
-      $('form').toggle();
       //dont keep any error messages that might have been leftover
       store.setError(null);  
       //render the adding form 
@@ -140,11 +140,9 @@ const bookmarkList = (function(){
   //in charge of the cancel adding bookmark functionality
   const handleCancelAddBookmark = function(){
     //event listener for when user clicks cancel in the form
-    $('form').on('click', '.js-cancel-create-bookmark-button', event => {
+    $('.js-adding-new-bookmark-form').on('click', '.js-cancel-create-bookmark-button', event => {
       //toggle adding in the store
       store.toggleAddingABookmark();
-      //toggle the hidden bool for form
-      $('form').toggle();
       //dont keep any error messages that might be leftover
       store.setError(null);
       // render the adding form (which will then print nothing)
@@ -155,7 +153,7 @@ const bookmarkList = (function(){
   //handles when the user clicks create bookmark
   const handleCreateBookmark = function(){
     //event listener on button the create button in the form
-    $('form').on('submit', event => {
+    $('.js-adding-new-bookmark-form').on('submit', event => {
       //prevent default
       event.preventDefault();
       //grab the form values into this object using serialize
@@ -168,8 +166,6 @@ const bookmarkList = (function(){
           bookmark.expanded = false;
           //toggle the adding property (we're no longer adding!)
           store.toggleAddingABookmark();
-          //make form disappear by toggling the hidden bool
-          $('form').toggle();
           //now add the bookmark to the store
           store.addBookmark(bookmark);
           //make sure no leftover errors
@@ -209,6 +205,7 @@ const bookmarkList = (function(){
       }
     });
   };
+
 
   //handles user wanting to expand a given bookmark
   const handleExpandBookmark = function(){
