@@ -14,6 +14,10 @@ const bookmarkList = (function(){
       store.toggleAddingABookmark(); 
       //dont keep any error messages that might have been leftover
       store.setError(null);  
+      //disable ability to edit bookmarks in the meantime PROBLEM
+      disableEditForBookmarks();
+      //disable button being clicked 
+      disableAddBookmarkForm();
       //render the adding form 
       renderAddBookmarkForm();
     });
@@ -27,6 +31,10 @@ const bookmarkList = (function(){
       store.toggleAddingABookmark();
       //dont keep any error messages that might be leftover
       store.setError(null);
+      //reenable ability to edit bookmarks
+      reenableEditForBookmarks();
+      //reenable add button being cliicked
+      reenableAddBookmarkForn();
       // render the adding form (which will then print nothing)
       renderAddBookmarkForm(); 
     });
@@ -52,6 +60,10 @@ const bookmarkList = (function(){
           store.addBookmark(bookmark);
           //make sure no leftover errors
           store.setError(null);
+          //reenable ability to ediit bookmark
+          reenableEditForBookmarks();
+          //reenable add being able to be clicked
+          reenableAddBookmarkForn();
           //render the adding form (will print nothing)
           renderAddBookmarkForm();
           //render the rest of the page 
@@ -122,11 +134,16 @@ const bookmarkList = (function(){
       //change it's editing property to true 
       store.toggleEditedForBookmark(id);
 
+
       //disable the ability to add a bookmark (and reenable after user hits save or cancel for edit) or else there's a glitch if trying to do both at same time 
-      toggleDisabledAddBookmark();
+      disableAddBookmarkForm();
 
       render();
       //then render the correct rating 
+
+
+      //disable edit button
+      disableEditForBookmarks();
     });
   };
 
@@ -157,11 +174,15 @@ const bookmarkList = (function(){
           //toggle the edit property bc we're done successfully editing
           store.toggleEditedForBookmark(id);
           //toggle the ability to add a bookmark
-          toggleDisabledAddBookmark();
+          reenableAddBookmarkForn();
           //set error to null
           store.setError(null);
+
           //render
           render();
+
+          //reenable ability to edt bookmarks
+          reenableEditForBookmarks();
         },
         //if the async function returned an error, it'll run this fn 
         error => {
@@ -180,8 +201,12 @@ const bookmarkList = (function(){
       const id = getIdFromBookmark(bookmark);
       store.toggleEditedForBookmark(id);
       //toggle the ability to add a bookmark
-      toggleDisabledAddBookmark();
+      reenableAddBookmarkForn();
+
       render();
+
+      //reenable ability to edt bookmarks
+      reenableEditForBookmarks();
     });
   };
 
@@ -364,13 +389,25 @@ const bookmarkList = (function(){
   });
 
   //toggles the disabled feature on add bookmark
-  const toggleDisabledAddBookmark = function(){
-    if ($('.js-begin-add-bookmark').prop('disabled')===true){
-      $('.js-begin-add-bookmark').prop('disabled', false);
-    }
-    else{
-      $('.js-begin-add-bookmark').prop('disabled', true);
-    }
+  const disableAddBookmarkForm = function(){
+    $('.js-begin-add-bookmark').prop('disabled', true);
+  };
+
+  const reenableAddBookmarkForn = function(){
+    $('.js-begin-add-bookmark').prop('disabled', false);
+  };
+
+  //also call this when user is adding a bookmark
+  const disableEditForBookmarks = function(){
+    //is it not working bc of event delegation? 
+    $('.js-edit-bookmark').prop('disabled', true);
+    // $('.js-bookmark-list').find('.js-edit-bookmark').prop('disabled', true);
+    console.log('disabling edit buttons');
+  };
+
+  const reenableEditForBookmarks = function(){
+    $('.js-edit-bookmark').prop('disabled', false);
+    console.log('reenabling edit buttons');
   };
 
   const bindEventListeners = function(){
