@@ -2,12 +2,14 @@
   box-sizing: border-box;
 }
 
-li{
-  background-color: #eac9be;
-}
 
 body{
   background-color:black;
+  font-family: 'Bitter', serif;
+}
+
+li{
+  background-color: #eac9be;
 }
 
 .container {
@@ -140,6 +142,7 @@ input,textarea, button, select{
   background-color:transparent;
   border:none;
   margin-bottom:10px;
+  font-weight: bold;
 }
 
 .details:hover, .details:focus{
@@ -182,6 +185,9 @@ select{
 
 h1{
   text-shadow: 2px 2px #eac9be;
+  font-family: 'Poor Story', cursive;
+  font-size:50px;
+  margin:0;
 }
 
 .edit-span{
