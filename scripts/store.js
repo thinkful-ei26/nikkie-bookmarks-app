@@ -6,6 +6,7 @@ const store = (function(){
   const filter = null;
   const error = null;
   const adding = false;
+  const disabled = false;
 
   const addBookmark = function(bookmark){
     this.bookmarks.push(bookmark);
@@ -39,6 +40,10 @@ const store = (function(){
     this.error = error;
   };
 
+  const setDisabled = function (bool_val){
+    this.disabled = bool_val;
+  };
+
   const setFilterRating = function (filter_rating){
     this.filter = filter_rating;
   };
@@ -53,6 +58,8 @@ const store = (function(){
     filter,
     error,
     adding,
+    disabled,
+    setDisabled,
     addBookmark,
     findAndDelete,
     toggleExpandedForBookmark,

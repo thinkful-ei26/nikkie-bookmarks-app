@@ -15,7 +15,7 @@ const bookmarkList = (function(){
       //dont keep any error messages that might have been leftover
       store.setError(null);  
       //disable ability to edit bookmarks in the meantime PROBLEM
-      disableEditForBookmarks();
+      store.setDisabled(true);
       //disable button being clicked 
       disableAddBookmarkForm();
       //render the adding form 
@@ -32,7 +32,7 @@ const bookmarkList = (function(){
       //dont keep any error messages that might be leftover
       store.setError(null);
       //reenable ability to edit bookmarks
-      reenableEditForBookmarks();
+      store.setDisabled(false);
       //reenable add button being cliicked
       reenableAddBookmarkForn();
       // render the adding form (which will then print nothing)
@@ -61,7 +61,7 @@ const bookmarkList = (function(){
           //make sure no leftover errors
           store.setError(null);
           //reenable ability to ediit bookmark
-          reenableEditForBookmarks();
+          store.setDisabled(false);
           //reenable add being able to be clicked
           reenableAddBookmarkForn();
           //render the adding form (will print nothing)
@@ -138,12 +138,12 @@ const bookmarkList = (function(){
       //disable the ability to add a bookmark (and reenable after user hits save or cancel for edit) or else there's a glitch if trying to do both at same time 
       disableAddBookmarkForm();
 
+      //disable edit button
+      store.setDisabled(true);
+
       render();
       //then render the correct rating 
-
-
-      //disable edit button
-      disableEditForBookmarks();
+  
     });
   };
 
@@ -177,12 +177,12 @@ const bookmarkList = (function(){
           reenableAddBookmarkForn();
           //set error to null
           store.setError(null);
-
+          //reenable ability to edt bookmarks
+          store.setDisabled(false);
           //render
           render();
 
-          //reenable ability to edt bookmarks
-          reenableEditForBookmarks();
+
         },
         //if the async function returned an error, it'll run this fn 
         error => {
@@ -202,11 +202,9 @@ const bookmarkList = (function(){
       store.toggleEditedForBookmark(id);
       //toggle the ability to add a bookmark
       reenableAddBookmarkForn();
-
-      render();
-
       //reenable ability to edt bookmarks
-      reenableEditForBookmarks();
+      store.setDisabled(false);
+      render();
     });
   };
 
@@ -220,7 +218,7 @@ const bookmarkList = (function(){
     if (store.filter){
       bookmarks = bookmarks.filter(bookmark=>bookmark.rating>=store.filter);
     }
-    
+
     //generate string from what's in the store
     const html = generateAddBookmarksList(bookmarks);
     $('.js-bookmark-list').html(html);
@@ -229,6 +227,13 @@ const bookmarkList = (function(){
     const numbers_html = generateNumbersOfBookmarks(bookmarks);
     $('.js-number-of-items').html(numbers_html);
 
+    //this has to be done after the string templates are done
+    if(store.disabled === true){
+      disableEditForBookmarks();
+    }
+    else{
+      reenableEditForBookmarks();
+    }
   };
 
   //check if the adding mode is true. if it is, generate the adding form, if it isn't, dont have the form be in the form html
@@ -238,6 +243,12 @@ const bookmarkList = (function(){
     }
     else{
       $('.js-adding-new-bookmark-form').html('');
+    }
+    if(store.disabled === true){
+      disableEditForBookmarks();
+    }
+    else{
+      reenableEditForBookmarks();
     }
   };
 
@@ -401,7 +412,6 @@ const bookmarkList = (function(){
   const disableEditForBookmarks = function(){
     //is it not working bc of event delegation? 
     $('.js-edit-bookmark').prop('disabled', true);
-    // $('.js-bookmark-list').find('.js-edit-bookmark').prop('disabled', true);
     console.log('disabling edit buttons');
   };
 
