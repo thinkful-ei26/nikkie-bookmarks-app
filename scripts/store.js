@@ -1,6 +1,6 @@
 'use strict';
 
-/*eslint-disable-next-line no-unused-vars */
+/*eslint-disable no-unused-vars */
 const store = (function(){
   const bookmarks=[];
   const filter = null;
@@ -50,7 +50,7 @@ const store = (function(){
 
   const updateBookmark = function(newBookmark, id){
     const bookmark = this.findBookmarkById(id);
-    Object.assign(bookmark, newBookmark);
+    Object.assign(bookmark, newBookmark); //mutates the reference to the current bookmark to the new bookmark
   };
 
   return{

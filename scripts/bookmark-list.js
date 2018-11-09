@@ -1,22 +1,22 @@
 'use strict';
 /*global store, api */
 
-/*eslint-disable-next-line no-unused-vars */
+/*eslint-disable no-unused-vars */
 const bookmarkList = (function(){
 
   /***************** HANDLER FUNCTIONS *****************/
 
   //in charge of handing the add bookmark functionality 
   const handleAddBookmark = function(){
-    //event listener for when user hits add bookmark button. 
+    //event listener for when user hits add bookmark button
     $('.js-begin-add-bookmark').click(event=>{
       //toggle adding in store
       store.toggleAddingABookmark(); 
-      //dont keep any error messages that might have been leftover
+      //dont keep any error messages that might have been left over
       store.setError(null);  
-      //disable ability to edit bookmarks in the meantime PROBLEM
+      //disable ability to edit bookmarks in the meantime by setting disabled in the store = true
       store.setDisabled(true);
-      //disable button being clicked 
+      //disable this button being clicked now that we're adding a bookmark
       disableAddBookmarkForm();
       //render the adding form 
       renderAddBookmarkForm();
@@ -29,13 +29,13 @@ const bookmarkList = (function(){
     $('.js-adding-new-bookmark-form').on('click', '.js-cancel-create-bookmark-button', event => {
       //toggle adding in the store
       store.toggleAddingABookmark();
-      //dont keep any error messages that might be leftover
+      //dont keep any error messages that might be lef tover
       store.setError(null);
       //reenable ability to edit bookmarks
       store.setDisabled(false);
-      //reenable add button being cliicked
-      reenableAddBookmarkForn();
-      // render the adding form (which will then print nothing)
+      //reenable ability to click add bookmark
+      reenableAddBookmarkForm();
+      // render the adding form (which will now print an empty string)
       renderAddBookmarkForm(); 
     });
   };
@@ -44,7 +44,7 @@ const bookmarkList = (function(){
   const handleCreateBookmark = function(){
     //event listener on button the create button in the form
     $('.js-adding-new-bookmark-form').on('submit', event => {
-      //prevent default
+      //prevent default bc its submt
       event.preventDefault();
       //grab the form values into this object using serialize
       const newBookmark = $(event.target).serializeJson();
@@ -52,7 +52,7 @@ const bookmarkList = (function(){
       api.createBookmark(newBookmark,
         //if the async function was successful, it'll run this callback fn
         bookmark => {
-          //take the bookmark (and give it an expanded property=false) and add it to the store 
+          //take the bookmark (and give it an expanded property=false)
           bookmark.expanded = false;
           //toggle the adding property (we're no longer adding!)
           store.toggleAddingABookmark();
@@ -60,10 +60,10 @@ const bookmarkList = (function(){
           store.addBookmark(bookmark);
           //make sure no leftover errors
           store.setError(null);
-          //reenable ability to ediit bookmark
+          //reenable ability to edit bookmark
           store.setDisabled(false);
-          //reenable add being able to be clicked
-          reenableAddBookmarkForn();
+          //reenable ability to click add bookmark
+          reenableAddBookmarkForm();
           //render the adding form (will print nothing)
           renderAddBookmarkForm();
           //render the rest of the page 
@@ -86,10 +86,11 @@ const bookmarkList = (function(){
     $('.js-bookmark-list').on('click', '.js-delete-bookmark', event=>{
       //first make sure they really want to delete 
       const delete_confirm = confirm('Are you sure you want to delete this bookmark?');
+      //if they confirm, go forward to delete
       if(delete_confirm){
       //figure out which bookmark we're deleting - get its id 
         const id = getIdFromBookmark(event.target);
-        //make a request to server to delete (it doesnt return anything)
+        //make a request to server to delete it from the server (it doesnt return anything)
         api.deleteBookmark(id, ()=> {
         //find and delete the bookmark from store
           store.findAndDelete(id);
@@ -103,11 +104,11 @@ const bookmarkList = (function(){
 
   //handles user wanting to expand a given bookmark
   const handleExpandBookmark = function(){
-    //event listener on the more/less details par of the elements, when its clicked toggle the expanded property on that bookmark. 
+    //event listener on the more/less details button 
     $('.js-bookmark-list').on('click', '.js-details', event =>{
       //find the id of the bookmark
       const id = getIdFromBookmark(event.target);
-      //toggle the expand property for the bookmark with that id
+      //toggle the expanded property for the bookmark with that id
       store.toggleExpandedForBookmark(id);
       //render
       render();
@@ -120,11 +121,14 @@ const bookmarkList = (function(){
     $('.js-filter-rating-dropdown').change(event=>{
       //grab the value of what they chose
       const filter_rating = $('.js-filter-rating-dropdown').val();
+      //set the filter in the store to that ratiing
       store.setFilterRating(filter_rating);
+      //render
       render();
     });
   };
 
+  //handles user hitting the edit icon/button on a bookmark
   const handleEditingBookmark = function(){
     //event listener for when user hits edit button 
     $('.js-bookmark-list').on('click', '.js-edit-bookmark', event=>{
@@ -132,32 +136,29 @@ const bookmarkList = (function(){
       const id = getIdFromBookmark(event.target);
       //change it's editing property to true 
       store.toggleEditedForBookmark(id);
-      //disable the ability to add a bookmark (and reenable after user hits save or cancel for edit) or else there's a glitch if trying to do both at same time 
+      //disable the ability to add a bookmark
       disableAddBookmarkForm();
-      //disable edit button
+      //disable the abilty to edit other bookmarks
       store.setDisabled(true);
+      //render
       render();
-      //then render the correct rating 
     });
   };
 
-
-  //I would have to see what the user actually edited, and only pass that into the update API. Compare what you get back from newBoookmark to what you already had in current. Strip out anything that hasn't changed.
-
+  //handles saving and updating the edits the user made
   const handleSaveEditBookmark = function(){
     //event listener on submiting the save button - needs to be on the form 
     $('.js-bookmark-list').on('submit', '.js-editing-form', event =>{
+      //prevent default
       event.preventDefault();
       //grab info from form and place it in newBookmark
       const newBookmark = $(event.target).serializeJson();
       //keep another variable pointing to the actual bookmark in the DOM so we can pass it into store later
       const currentBookmark = $(event.target).closest('.js-bookmark-element');
-      // if (!desc){
-      //   desc = null;
-      // } //if desc is left blank, send in null
+      //get the id of the current bookmark
       const id = getIdFromBookmark(currentBookmark);
 
-      //call api fn to update item on server's end. returns nothing
+      //call api fn to update item on server's end. pass in the new bookmark and the id. (returns nothing)
       api.updateBookmark(newBookmark,id,
         //if the async function was successful, it'll run this callback fn
         () => {
@@ -167,58 +168,66 @@ const bookmarkList = (function(){
           store.updateBookmark(newBookmark, id);
           //toggle the edit property bc we're done successfully editing
           store.toggleEditedForBookmark(id);
-          //toggle the ability to add a bookmark
-          reenableAddBookmarkForn();
-          //set error to null
+          //reenable ability to add a bookmark
+          reenableAddBookmarkForm();
+          //set error to null so no leftovers
           store.setError(null);
-          //reenable ability to edt bookmarks
+          //reenable ability to edit bookmarks
           store.setDisabled(false);
           //render
           render();
         },
         //if the async function returned an error, it'll run this fn 
         error => {
+          //set the error in the store to whatever server returned 
           store.setError(error.responseJSON.message);
+          //display error to user
           showErrorMessageForEdit(store.error);
         }
       );  
     });
   };
 
+  //handles user cancelling edit on a bookmark
   const handleCancelEditBookmark = function(){
-    //event listener on cancel button - if it cancels, just toggle editing and render     
+    //event listener on cancel button    
     $('.js-bookmark-list').on('click', '.js-cancel-edit-button', event =>{
-      //toggle editing for that bookmark 
+      //find out which bookmark was being edited
       const bookmark = $(event.target).closest('.js-bookmark-element');
+      //get the id of the bookmark
       const id = getIdFromBookmark(bookmark);
+      //toggle the editing propery of that id
       store.toggleEditedForBookmark(id);
-      //toggle the ability to add a bookmark
-      reenableAddBookmarkForn();
-      //reenable ability to edt bookmarks
+      //reenable the ability to add a bookmark
+      reenableAddBookmarkForm();
+      //reenable ability to edit bookmarks
       store.setDisabled(false);
+      //render
       render();
     });
   };
 
   /***************** RENDERING FUNCTIONS *****************/
 
+  //renders the page
   const render = function(){
     //copy the store bookmarks so we can filter it if necassary, but doesnt change the store itself 
     let bookmarks = [...store.bookmarks];
 
+    //if we want to filter, filter
     if (store.filter){
       bookmarks = bookmarks.filter(bookmark=>bookmark.rating>=store.filter);
     }
 
-    //generate string from what's in the store
+    //generate string from what's in the store for the bookmarks list
     const html = generateAddBookmarksList(bookmarks);
     $('.js-bookmark-list').html(html);
 
-    //generate number of items
+    //generate number of items to display on top
     const numbers_html = generateNumbersOfBookmarks(bookmarks);
     $('.js-number-of-items').html(numbers_html);
 
-    //this has to be done after the string templates are done
+    //this has to be done after the string templates are done to add in disabled if need be
     if(store.disabled === true){
       disableEditForBookmarks();
     }
@@ -227,7 +236,7 @@ const bookmarkList = (function(){
     }
   };
 
-  //check if the adding mode is true. if it is, generate the adding form, if it isn't, dont have the form be in the form html
+  //check if the adding mode is true. if it is, generate the adding form, if it isn't, generate empty string 
   const renderAddBookmarkForm = function(){
     if(store.adding){
       $('.js-adding-new-bookmark-form').html(generateAddBookmarkForm());
@@ -235,6 +244,8 @@ const bookmarkList = (function(){
     else{
       $('.js-adding-new-bookmark-form').html('');
     }
+
+    //see what the status of disabled here is 
     if(store.disabled === true){
       disableEditForBookmarks();
     }
@@ -357,7 +368,7 @@ const bookmarkList = (function(){
   //generates the string that tells user how many bookmarks are on page
   const generateNumbersOfBookmarks = function(bookmarks){
     //bookmark vs bookmarks depending on how many there are 
-    const word = bookmarks.length >1 || bookmarks.length===0 ? 'bookmarks' : 'bookmark';
+    const word = bookmarks.length >1 || bookmarks.length===0 ? 'Bookmarks' : 'Bookmark';
     return `${bookmarks.length} ${word}`;
   };
 
@@ -378,6 +389,7 @@ const bookmarkList = (function(){
     return $(bookmark).closest('.js-bookmark-element').data('bookmark-id');
   };
 
+  //helps us serialize
   $.fn.extend({
     serializeJson: function(){
       const obj = {};
@@ -395,7 +407,7 @@ const bookmarkList = (function(){
   };
 
   //reenables the ability to click on the button to add a bookmark
-  const reenableAddBookmarkForn = function(){
+  const reenableAddBookmarkForm = function(){
     $('.js-begin-add-bookmark').prop('disabled', false);
   };
 
@@ -403,15 +415,14 @@ const bookmarkList = (function(){
   const disableEditForBookmarks = function(){
     //is it not working bc of event delegation? 
     $('.js-edit-bookmark').prop('disabled', true);
-    console.log('disabling edit buttons');
   };
 
   //reenables the ability to edit bookmarks
   const reenableEditForBookmarks = function(){
     $('.js-edit-bookmark').prop('disabled', false);
-    console.log('reenabling edit buttons');
   };
 
+  //bind all the event listeners
   const bindEventListeners = function(){
     handleAddBookmark();
     handleCreateBookmark();

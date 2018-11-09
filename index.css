@@ -2,7 +2,6 @@
   box-sizing: border-box;
 }
 
-
 body{
   background-color:black;
   font-family: 'Bitter', serif;
@@ -57,10 +56,6 @@ select:hover{
   border-radius:10px;
 }
 
-/* li div{
-  padding:20px;
-} */
-
 .adding-new-bookmark-form{
   clear: both;
   border: 5px solid black;
@@ -91,8 +86,6 @@ input,textarea, button, select{
   padding-left:20px;
   font-weight: bold;
   text-align: left;
-  /* border-bottom-left-radius: 10px; */
-  /* border-bottom-right-radius: 10px; */
 }
 
 .visit-site{
@@ -116,13 +109,11 @@ input,textarea, button, select{
 .float-right{
   float:right;
   margin-top:10px;
-  position:relative
+  position:relative;
+  margin-right: 5px;
 }
 
-/* FIX CSS HERE */
-
 .delete-bookmark, .edit-bookmark {
-  /* margin-top:10px; */
   background-color: transparent;
   border: none;
   color:white;
@@ -133,7 +124,6 @@ input,textarea, button, select{
   color: #eac9be;
   border: none;
 }
-
 
 .details{
   cursor: pointer;
@@ -152,6 +142,7 @@ input,textarea, button, select{
   clear:both;
   padding-top:15px;
   font-weight: bold;
+  text-shadow: 1px 1px #eac9be;
 }
 
 label{
@@ -211,7 +202,6 @@ h1{
   opacity: 0;
   font-size:11px;
   transition: opacity .5s;
-
 }
 
 /* changes the icon's description opacity */
