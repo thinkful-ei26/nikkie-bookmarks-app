@@ -130,20 +130,14 @@ const bookmarkList = (function(){
     $('.js-bookmark-list').on('click', '.js-edit-bookmark', event=>{
       //find out which bookmark we're editing
       const id = getIdFromBookmark(event.target);
-
       //change it's editing property to true 
       store.toggleEditedForBookmark(id);
-
-
       //disable the ability to add a bookmark (and reenable after user hits save or cancel for edit) or else there's a glitch if trying to do both at same time 
       disableAddBookmarkForm();
-
       //disable edit button
       store.setDisabled(true);
-
       render();
       //then render the correct rating 
-  
     });
   };
 
@@ -181,8 +175,6 @@ const bookmarkList = (function(){
           store.setDisabled(false);
           //render
           render();
-
-
         },
         //if the async function returned an error, it'll run this fn 
         error => {
@@ -212,7 +204,6 @@ const bookmarkList = (function(){
 
   const render = function(){
     //copy the store bookmarks so we can filter it if necassary, but doesnt change the store itself 
-
     let bookmarks = [...store.bookmarks];
 
     if (store.filter){
@@ -370,7 +361,6 @@ const bookmarkList = (function(){
     return `${bookmarks.length} ${word}`;
   };
 
-
   /***************** DISPLAYING ERROR FUNCTIONS *****************/
 
   const showErrorMessage = function (error){
@@ -399,22 +389,24 @@ const bookmarkList = (function(){
     }
   });
 
-  //toggles the disabled feature on add bookmark
+  //disables the ability to click on the button to add a bookmark
   const disableAddBookmarkForm = function(){
     $('.js-begin-add-bookmark').prop('disabled', true);
   };
 
+  //reenables the ability to click on the button to add a bookmark
   const reenableAddBookmarkForn = function(){
     $('.js-begin-add-bookmark').prop('disabled', false);
   };
 
-  //also call this when user is adding a bookmark
+  //disables the abiliity to edit bookmarks
   const disableEditForBookmarks = function(){
     //is it not working bc of event delegation? 
     $('.js-edit-bookmark').prop('disabled', true);
     console.log('disabling edit buttons');
   };
 
+  //reenables the ability to edit bookmarks
   const reenableEditForBookmarks = function(){
     $('.js-edit-bookmark').prop('disabled', false);
     console.log('reenabling edit buttons');
