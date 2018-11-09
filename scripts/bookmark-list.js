@@ -1,128 +1,10 @@
 'use strict';
 /*global store, api */
 
+/*eslint-disable-next-line no-unused-vars */
 const bookmarkList = (function(){
 
-  //generates the form for the user to add a bookmark
-  const generateAddBookmarkForm = function(){
-    return `
-          <h3>Create A New Bookmark</h3>
-          <label for = "title">Title:</label>
-          <input id = "title" name = "title" type="text" class = "input-bookmark-title js-input-bookmark-title" placeholder = "Title">
-          <label for = "url">URL:</label>
-          <input id = "url" name = "url" type="text" class = "input-bookmark-url js-input-bookmark-url" placeholder="URL">
-          <label for = "desc">Description:</label>
-          <textarea id = "desc" name = "desc" name="bookmark-desc" class = "input-bookmark-desc js-input-bookmark-description" placeholder="Write a brief description about your bookmark"></textarea>
-          <label for="rating">Rating:</label>
-          <select id = "rating" name = "rating" class = "input-bookmark-rating js-input-bookmark-rating">
-            <option selected disabled>Choose a Rating</option>
-            <option value="1">1 Star</option>
-            <option value="2">2 Stars</option>
-            <option value="3">3 Stars</option>
-            <option value="4">4 Stars</option>
-            <option value="5">5 Stars</option>
-          </select>
-          <p class = "error-message js-error-message"></p>
-          <button type = "submit" class = "create-bookmark-button js-create-bookmark-button">Create Bookmark</button>
-          <button type = "button" class = "cancel-create-bookmark-button js-cancel-create-bookmark-button">Cancel </button>
-    `;
-  };
-
-  //goes through the bookmarks and generates an li element for each bookmark
-  const generateAddBookmarksList = function(bookmarks){
-    return bookmarks.map(bookmark=>generateBookmarkElement(bookmark)).join('');
-  };
-
-  //generates the string for a bookmark element 
-  const generateBookmarkElement = function(bookmark){
-    //if rating has a value, give that many stars. If not, just write no rating yet
-    let rating = ''; 
-    if(bookmark.rating){
-      const number_of_stars = bookmark.rating;
-      for (let i =0; i < number_of_stars; i++){
-        rating+='<i class="fas fa-star"></i>';
-      }
-      //also put in empty stars
-      for(let i = 0; i < 5 - number_of_stars; i++){
-        rating+='<i class="far fa-star"></i>';
-      }
-    }
-    else{
-      rating = 'No rating yet';
-    }
-
-    //check if desc has a value, if not write "no description yet" 
-    const desc = bookmark.desc!=='' ? bookmark.desc : 'No description yet';
-
-    //return a different string if this bookmark is in expanded mode vs not
-    let details = bookmark.expanded ? `  <p>${desc}</p>
-        <a href="${bookmark.url} class = "visit-site" target = "_blank">Visit site</a>
-        <button type = "button" class = "details js-details" > Less Details <i class="fas fa-caret-up"></i> </button>
-        ` : '<button type = "button" class = "details js-details" > More Details <i class="fas fa-caret-down"></i> </button>';
-
-    //return a different string if it's in editing mode
-    if (bookmark.editing){
-      //deals with the edit remembering which rating value was selected
-      const cell = ['','','','',''];
-      cell[bookmark.rating-1] = 'selected';
-
-      return `
-      <li class = "bookmark-element js-bookmark-element" data-bookmark-id = "${bookmark.id}">
-      <p class = "edit-bookmark-title-p js-bookmark-title">${bookmark.title}</p>
-      <form class = "editing-form js-editing-form ">
-        <label for = "title">Title:</label>
-        <input id = "title" name = "title" type = "text" class = "edit-bookmark-title js-edit-bookmark-title" value = "${bookmark.title}"></input>
-        <label for = "url">URL:</label>
-        <input id = "url" name = "url" type = "text" class = "edit-bookmark-url js-edit-bookmark-url" value = "${bookmark.url}"></input>
-        <label for = "desc">Description:</label>
-        <textarea id = "desc" name = "desc" class = "edit-bookmark-desc js-edit-bookmark-description" value = "${desc}" >${bookmark.desc}</textarea>
-        <label for = "rating">Rating:</label>
-        <select id = "rating" name = "rating" class = "input-edit-bookmark-rating js-input-edit-bookmark-rating">
-              <option selected disabled>Choose a Rating</option>
-              <option ${cell[0]} value="1">1 Star</option>
-              <option ${cell[1]} value="2">2 Stars</option>
-              <option ${cell[2]} value="3">3 Stars</option>
-              <option ${cell[3]} value="4">4 Stars</option>
-              <option ${cell[4]} value="5">5 Stars</option>
-        </select>
-        <output class = "edit-error-message js-edit-error-message"></output>
-        <button type = "submit" class = "save-edit-button js-save-edit-button"> Save </button>
-        <button type = "button" class = "cancel-edit-button js-cancel-edit-button"> Cancel </button>
-      </form> 
-    </li>
-      `;
-    }
-
-    else {
-      return `
-      <li class = "bookmark-element js-bookmark-element" data-bookmark-id = "${bookmark.id}">
-      <div class = "float-right">
-      <button aria-label = "edit bookmark" class = "edit-bookmark  js-edit-bookmark"><i class="fas fa-edit"></i></button>
-      <span class = "edit-span js-edit-span">Edit</span>
-      <button aria-label = "delete bookmark" class = "delete-bookmark js-delete-bookmark"><i class="fas fa-trash-alt "></i></button>
-      <span class = "delete-span js-delete-span">Delete</span>
-      </div>
-      <p class = "bookmark-title js-bookmark-title">${bookmark.title}</p>
-      <div>
-        <p>${rating}</p>
-        ${details}
-      </div>
-    </li>
-      `;
-    }
-  };
-
-  //generates the string that tells user how many bookmarks are on page
-  const generateNumbersOfBookmarks = function(bookmarks){
-    //bookmark vs bookmarks depending on how many there are 
-    const word = bookmarks.length >1 || bookmarks.length===0 ? 'bookmarks' : 'bookmark';
-    return `${bookmarks.length} ${word}`;
-  };
-
-  //return the id of the given bookmark by traversng through the DOM and finding its data attribute
-  const getIdFromBookmark = function(bookmark){
-    return $(bookmark).closest('.js-bookmark-element').data('bookmark-id');
-  };
+  /***************** HANDLER FUNCTIONS *****************/
 
   //in charge of handing the add bookmark functionality 
   const handleAddBookmark = function(){
@@ -243,22 +125,7 @@ const bookmarkList = (function(){
       render();
       //then render the correct rating 
     });
-
-
-    //render - if editing is true, have a different form with the current values in there, let them change it, then recall the API and UPDATE it (using patch method)
-
   };
-
-  $.fn.extend({
-    serializeJson: function(){
-      const obj = {};
-      const data = new FormData(this[0]);
-      data.forEach((value,key)=>{
-        obj[key] = value;
-      });
-      return obj;
-    }
-  });
 
 
   //I would have to see what the user actually edited, and only pass that into the update API. Compare what you get back from newBoookmark to what you already had in current. Strip out anything that hasn't changed.
@@ -311,12 +178,13 @@ const bookmarkList = (function(){
     });
   };
 
+  /***************** RENDERING FUNCTIONS *****************/
+
   const render = function(){
     //copy the store bookmarks so we can filter it if necassary, but doesnt change the store itself 
 
     let bookmarks = [...store.bookmarks];
 
-    console.log(bookmarks);
     if (store.filter){
       bookmarks = bookmarks.filter(bookmark=>bookmark.rating>=store.filter);
     }
@@ -341,6 +209,127 @@ const bookmarkList = (function(){
     }
   };
 
+  /***************** GENERATING STRING TEMPLATES FUNCTIONS *****************/
+
+  //generates the form for the user to add a bookmark
+  const generateAddBookmarkForm = function(){
+    return `
+          <h3>Create A New Bookmark</h3>
+          <label for = "title">Title:</label>
+          <input id = "title" name = "title" type="text" class = "input-bookmark-title js-input-bookmark-title" placeholder = "Title">
+          <label for = "url">URL:</label>
+          <input id = "url" name = "url" type="text" class = "input-bookmark-url js-input-bookmark-url" placeholder="URL">
+          <label for = "desc">Description:</label>
+          <textarea id = "desc" name = "desc" name="bookmark-desc" class = "input-bookmark-desc js-input-bookmark-description" placeholder="Write a brief description about your bookmark"></textarea>
+          <label for="rating">Rating:</label>
+          <select id = "rating" name = "rating" class = "input-bookmark-rating js-input-bookmark-rating">
+            <option selected disabled>Choose a Rating</option>
+            <option value="1">1 Star</option>
+            <option value="2">2 Stars</option>
+            <option value="3">3 Stars</option>
+            <option value="4">4 Stars</option>
+            <option value="5">5 Stars</option>
+          </select>
+          <p class = "error-message js-error-message"></p>
+          <button type = "submit" class = "create-bookmark-button js-create-bookmark-button">Create Bookmark</button>
+          <button type = "button" class = "cancel-create-bookmark-button js-cancel-create-bookmark-button">Cancel </button>
+    `;
+  };
+
+  //goes through the bookmarks and generates an li element for each bookmark
+  const generateAddBookmarksList = function(bookmarks){
+    return bookmarks.map(bookmark=>generateBookmarkElement(bookmark)).join('');
+  };
+
+  //generates the string for a bookmark element 
+  const generateBookmarkElement = function(bookmark){
+    //if rating has a value, give that many stars. If not, just write no rating yet
+    let rating = ''; 
+    if(bookmark.rating){
+      const number_of_stars = bookmark.rating;
+      for (let i =0; i < number_of_stars; i++){
+        rating+='<i class="fas fa-star"></i>';
+      }
+      //also put in empty stars
+      for(let i = 0; i < 5 - number_of_stars; i++){
+        rating+='<i class="far fa-star"></i>';
+      }
+    }
+    else{
+      rating = 'No rating yet';
+    }
+
+    //check if desc has a value, if not write "no description yet" 
+    const desc = bookmark.desc!=='' ? bookmark.desc : 'No description yet';
+
+    //return a different string if this bookmark is in expanded mode vs not
+    let details = bookmark.expanded ? `  <p>${desc}</p>
+        <a href="${bookmark.url}" class = "visit-site" target = "_blank">Visit site</a>
+        <button type = "button" class = "details js-details" > Less Details <i class="fas fa-caret-up"></i> </button>
+        ` : '<button type = "button" class = "details js-details" > More Details <i class="fas fa-caret-down"></i> </button>';
+
+    //return a different string if it's in editing mode
+    if (bookmark.editing){
+      //deals with the edit remembering which rating value was selected
+      const cell = ['','','','',''];
+      cell[bookmark.rating-1] = 'selected';
+
+      return `
+      <li class = "bookmark-element js-bookmark-element" data-bookmark-id = "${bookmark.id}">
+      <p class = "edit-bookmark-title-p js-bookmark-title">${bookmark.title}</p>
+      <form class = "editing-form js-editing-form ">
+        <label for = "title">Title:</label>
+        <input id = "title" name = "title" type = "text" class = "edit-bookmark-title js-edit-bookmark-title" value = "${bookmark.title}"></input>
+        <label for = "url">URL:</label>
+        <input id = "url" name = "url" type = "text" class = "edit-bookmark-url js-edit-bookmark-url" value = "${bookmark.url}"></input>
+        <label for = "desc">Description:</label>
+        <textarea id = "desc" name = "desc" class = "edit-bookmark-desc js-edit-bookmark-description" value = "${desc}" >${bookmark.desc}</textarea>
+        <label for = "rating">Rating:</label>
+        <select id = "rating" name = "rating" class = "input-edit-bookmark-rating js-input-edit-bookmark-rating">
+              <option selected disabled>Choose a Rating</option>
+              <option ${cell[0]} value="1">1 Star</option>
+              <option ${cell[1]} value="2">2 Stars</option>
+              <option ${cell[2]} value="3">3 Stars</option>
+              <option ${cell[3]} value="4">4 Stars</option>
+              <option ${cell[4]} value="5">5 Stars</option>
+        </select>
+        <output class = "edit-error-message js-edit-error-message"></output>
+        <button type = "submit" class = "save-edit-button js-save-edit-button"> Save </button>
+        <button type = "button" class = "cancel-edit-button js-cancel-edit-button"> Cancel </button>
+      </form> 
+    </li>
+      `;
+    }
+
+    else {
+      return `
+      <li class = "bookmark-element js-bookmark-element" data-bookmark-id = "${bookmark.id}">
+      <div class = "float-right">
+      <button aria-label = "edit bookmark" class = "edit-bookmark  js-edit-bookmark"><i class="fas fa-edit"></i></button>
+      <span class = "edit-span js-edit-span">Edit</span>
+      <button aria-label = "delete bookmark" class = "delete-bookmark js-delete-bookmark"><i class="fas fa-trash-alt "></i></button>
+      <span class = "delete-span js-delete-span">Delete</span>
+      </div>
+      <p class = "bookmark-title js-bookmark-title">${bookmark.title}</p>
+      <div>
+        <p>${rating}</p>
+        ${details}
+      </div>
+    </li>
+      `;
+    }
+  };
+
+  //generates the string that tells user how many bookmarks are on page
+  const generateNumbersOfBookmarks = function(bookmarks){
+    //bookmark vs bookmarks depending on how many there are 
+    const word = bookmarks.length >1 || bookmarks.length===0 ? 'bookmarks' : 'bookmark';
+    return `${bookmarks.length} ${word}`;
+  };
+
+
+  /***************** DISPLAYING ERROR FUNCTIONS *****************/
+
   const showErrorMessage = function (error){
     $('.js-error-message').html(error);
   };
@@ -348,6 +337,24 @@ const bookmarkList = (function(){
   const showErrorMessageForEdit = function(error){
     $('.js-edit-error-message').html(error);
   };
+
+  /***************** MISC HELPER FUNCTIONS *****************/
+
+  //return the id of the given bookmark by traversng through the DOM and finding its data attribute
+  const getIdFromBookmark = function(bookmark){
+    return $(bookmark).closest('.js-bookmark-element').data('bookmark-id');
+  };
+
+  $.fn.extend({
+    serializeJson: function(){
+      const obj = {};
+      const data = new FormData(this[0]);
+      data.forEach((value,key)=>{
+        obj[key] = value;
+      });
+      return obj;
+    }
+  });
 
   const bindEventListeners = function(){
     handleAddBookmark();

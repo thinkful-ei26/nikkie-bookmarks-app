@@ -27,7 +27,7 @@ button,select, input,textarea{
   border:2px solid black;
 }
 
-button:hover, .begin-add-bookmark:focus, .filter-rating-dropdown:hover, .filter-rating-dropdown:focus{
+button:hover, .begin-add-bookmark:focus, .create-bookmark-button:focus, .cancel-create-bookmark-button:focus, .details:focus, .filter-rating-dropdown:hover, .filter-rating-dropdown:focus{
   cursor: pointer;
   color: #eac9be;
   background-color: black;
@@ -94,7 +94,7 @@ input,textarea, button, select{
   /* border-bottom-right-radius: 10px; */
 }
 
-a{
+.visit-site{
   background-color:black;
   color: white;
   border: 2px solid black;
@@ -106,7 +106,7 @@ a{
   width:30%;
 }
 
-a:hover{
+.visit-site:hover, .visit-site:focus{
   background-color:white;
   color:black;
   transition: background-color .5s;
@@ -127,17 +127,12 @@ a:hover{
   color:white;
 }
 
-.delete-bookmark:hover{
+.delete-bookmark:hover, .edit-bookmark:hover, .delete-bookmark:focus, .edit-bookmark:focus{
   background-color: transparent;
   color: #eac9be;
   border: none;
 }
 
-.edit-bookmark:hover{
-  background-color: transparent;
-  color: #eac9be;
-  border: none;
-}
 
 .details{
   cursor: pointer;
@@ -215,6 +210,6 @@ h1{
 }
 
 /* changes the icon's description opacity */
-.edit-bookmark:hover + .edit-span, .delete-bookmark:hover + .delete-span{
+.edit-bookmark:hover + .edit-span, .delete-bookmark:hover + .delete-span, .edit-bookmark:focus + .edit-span, .delete-bookmark:focus + .delete-span{
   opacity: 1; 
 } 

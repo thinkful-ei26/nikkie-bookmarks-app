@@ -1,5 +1,6 @@
 'use strict';
 
+/*eslint-disable-next-line no-unused-vars */
 const store = (function(){
   const bookmarks=[];
   const filter = null;
@@ -29,7 +30,7 @@ const store = (function(){
   };
 
   const toggleAddingABookmark = function(){
-    store.adding = !store.adding;
+    this.adding = !this.adding;
     //toggle the hidden bool for the form 
     $('form').toggle();
   };
@@ -43,11 +44,8 @@ const store = (function(){
   };
 
   const updateBookmark = function(newBookmark, id){
-    const bookmark = this.findBookmarkById(id); //changed this, and now it works?
-    console.log(bookmark);
-    Object.assign(bookmark, newBookmark);//not being properly reassigned here
-    console.log('this is the found bookmark',bookmark);
-    console.log('this is the new bookbark',newBookmark);
+    const bookmark = this.findBookmarkById(id);
+    Object.assign(bookmark, newBookmark);
   };
 
   return{
