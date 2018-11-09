@@ -223,3 +223,13 @@ output{
   display:block;
   padding:5px;
 }
+
+button:disabled, button[disabled]{
+  cursor: not-allowed;
+  background-color:transparent;
+}
+
+.begin-add-bookmark:disabled, .begin-add-bookmark[disabled]{
+  border: 2px solid black;
+  color: black;
+}
