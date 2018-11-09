@@ -139,10 +139,16 @@ input,textarea, button, select{
 }
 
 .number-of-items{
-  clear:both;
-  padding-top:15px;
+  clear: both;
+  padding: 5px;
+  font-size:13px;
   font-weight: bold;
   text-shadow: 1px 1px #eac9be;
+  background-color: #eac9be;
+  width: 30%;
+  margin: auto;
+  border: 2px solid black;
+  margin-top:63px;
 }
 
 label{
