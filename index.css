@@ -219,3 +219,8 @@ h1{
 .edit-bookmark:hover + .edit-span, .delete-bookmark:hover + .delete-span, .edit-bookmark:focus + .edit-span, .delete-bookmark:focus + .delete-span{
   opacity: 1; 
 } 
+
+output{
+  display:block;
+  padding:5px;
+}

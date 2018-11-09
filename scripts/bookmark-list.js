@@ -122,6 +122,9 @@ const bookmarkList = (function(){
       //change it's editing property to true 
       store.toggleEditedForBookmark(id);
 
+      //disable the ability to add a bookmark (and reenable after user hits save or cancel for edit) or else there's a glitch if trying to do both at same time 
+      toggleDisabledAddBookmark();
+
       render();
       //then render the correct rating 
     });
@@ -153,6 +156,8 @@ const bookmarkList = (function(){
           store.updateBookmark(newBookmark, id);
           //toggle the edit property bc we're done successfully editing
           store.toggleEditedForBookmark(id);
+          //toggle the ability to add a bookmark
+          toggleDisabledAddBookmark();
           //set error to null
           store.setError(null);
           //render
@@ -174,6 +179,8 @@ const bookmarkList = (function(){
       const bookmark = $(event.target).closest('.js-bookmark-element');
       const id = getIdFromBookmark(bookmark);
       store.toggleEditedForBookmark(id);
+      //toggle the ability to add a bookmark
+      toggleDisabledAddBookmark();
       render();
     });
   };
@@ -220,7 +227,7 @@ const bookmarkList = (function(){
           <label for = "url">URL:</label>
           <input id = "url" name = "url" type="text" class = "input-bookmark-url js-input-bookmark-url" placeholder="URL">
           <label for = "desc">Description:</label>
-          <textarea id = "desc" name = "desc" name="bookmark-desc" class = "input-bookmark-desc js-input-bookmark-description" placeholder="Write a brief description about your bookmark"></textarea>
+          <textarea id = "desc" name = "desc" name="bookmark-desc" class = "input-bookmark-desc js-input-bookmark-description" placeholder="Write a brief description about your bookmark" rows = "4"></textarea>
           <label for="rating">Rating:</label>
           <select id = "rating" name = "rating" class = "input-bookmark-rating js-input-bookmark-rating">
             <option selected disabled>Choose a Rating</option>
@@ -283,7 +290,7 @@ const bookmarkList = (function(){
         <label for = "url">URL:</label>
         <input id = "url" name = "url" type = "text" class = "edit-bookmark-url js-edit-bookmark-url" value = "${bookmark.url}"></input>
         <label for = "desc">Description:</label>
-        <textarea id = "desc" name = "desc" class = "edit-bookmark-desc js-edit-bookmark-description" value = "${desc}" >${bookmark.desc}</textarea>
+        <textarea id = "desc" name = "desc" class = "edit-bookmark-desc js-edit-bookmark-description" value = "${desc}" rows = "4">${bookmark.desc}</textarea>
         <label for = "rating">Rating:</label>
         <select id = "rating" name = "rating" class = "input-edit-bookmark-rating js-input-edit-bookmark-rating">
               <option selected disabled>Choose a Rating</option>
@@ -355,6 +362,16 @@ const bookmarkList = (function(){
       return obj;
     }
   });
+
+  //toggles the disabled feature on add bookmark
+  const toggleDisabledAddBookmark = function(){
+    if ($('.js-begin-add-bookmark').prop('disabled')===true){
+      $('.js-begin-add-bookmark').prop('disabled', false);
+    }
+    else{
+      $('.js-begin-add-bookmark').prop('disabled', true);
+    }
+  };
 
   const bindEventListeners = function(){
     handleAddBookmark();
