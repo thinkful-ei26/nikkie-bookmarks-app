@@ -1,5 +1,7 @@
 # Nikkie's Bookmark App
 
+https://thinkful-ei26.github.io/nikkie-bookmarks-app/
+
 ## Features
 1. User can see any bookmarks they've previously added (if the server hasn't deleted them) on page load. Bookmarks default to condensed view on page load 
 
